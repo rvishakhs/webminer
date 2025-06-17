@@ -47,14 +47,10 @@ function DesktopSidebar() {
       <div className="flex items-center justify-center gap-2 border-b-[1px] border-separate p-4">
         <Logo />
       </div>
+      <div className="flex p-2 border-b-[1px] border-separate">
+        Here I need to show the username 
+      </div>
       <div className="flex flex-col gap-2 p-4">
-            {/* {routes.map(route => (
-                <Link key={route.href} href={route.href}>
-                    <route.icon />
-                    {route.label}
-                </Link>
-            ))} */}
-
             {routes.map((route) => (
                 
                     <Link key={route.href} href={route.href} className={buttonVariants({
