@@ -1,10 +1,9 @@
 'use client';
 
-import { Layers2Icon } from 'lucide-react';
-import { useState } from 'react';
+import { Layers2Icon, Loader2 } from 'lucide-react';
+import { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { createWorkflowSchema } from 'schema/workflow';
-import { z } from 'zod';
+import { createWorkflowSchema, type CreateWorkflowSchemaType } from 'schema/workflow';
 import { zodResolver } from '@hookform/resolvers/zod';
 import CustomDialogHeader from '~/components/CustomDialogHeader';
 import { Button } from '~/components/ui/button';
@@ -12,21 +11,45 @@ import { Dialog, DialogContent, DialogTrigger } from '~/components/ui/dialog';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
 import { Textarea } from '~/components/ui/textarea';
+import { useMutation } from '@tanstack/react-query';
+import { CreateWorkFlow } from 'actions/workflows/createWorkflow';
+import { toast } from 'sonner';
+import { redirect } from "next/navigation"; 
 
 function CreateWorkFlowDialogue({ triggerText }: { triggerText?: string }) {
   const [open, setOpen] = useState(false);
 
-  const form = useForm<z.infer<typeof createWorkflowSchema>>({
+  const form = useForm<CreateWorkflowSchemaType>({
     resolver: zodResolver(createWorkflowSchema),
     defaultValues: {
       name: '',
     },
   });
 
-  const onSubmit = (data: z.infer<typeof createWorkflowSchema>) => {
-    console.log(data);
+  const { mutate, isPending } = useMutation({
+    mutationFn: CreateWorkFlow, 
+    onSuccess: (data) => {
+      toast.success("Workflow created successfully!", {id: 'create-workflow-success'});
+      toast.dismiss('create-workflow-loading');
+      setTimeout(() => {
+        redirect(`/dashboard/workspace/${data.data.id}`);
+      }, 1000);
+    },
+    onError: (error) => {
+      toast.dismiss('create-workflow-loading'); // Dismiss the loading toast
+      toast.error("Failed to create workflow. Please try again.", {id: 'create-workflow-error'});
+      console.error("Error creating workflow:", error);
+      // Handle error appropriately, e.g., show a toast notification
+    }
+  })
+ 
+  const onSubmit = useCallback((values: CreateWorkflowSchemaType) => {
+    toast.loading("Creating workflow...", {id: 'create-workflow-loading'});
+    mutate(values);
     setOpen(false);
-  };
+  },
+   [mutate]
+  );
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -83,7 +106,10 @@ function CreateWorkFlowDialogue({ triggerText }: { triggerText?: string }) {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className='w-full hover:bg-primary/90 cursor-pointer'>Submit</Button>
+              <Button disabled={isPending} type="submit" className='w-full hover:bg-primary/90 cursor-pointer'>
+                {isPending && <Loader2 className='animate-spin' />}
+                {!isPending && "Proceed"}
+              </Button>
             </form>
           </Form>
         </div>
