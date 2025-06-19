@@ -4,22 +4,24 @@ import React, { Suspense } from 'react'
 import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
 import { Skeleton } from '~/components/ui/skeleton'
 import { waitFor } from '~/lib/helper/waitFor'
+import CreateWorkFlowDialogue from './_components/CreateWorkFlowDialogue'
 
 function page() {
   return (
-    <div className='flex flex-col h-screen flex-1 '>
-      <div className="flex flex-col justify-between">
+    <div className='flex-1 flex flex-col h-full'>
+      <div className="flex justify-between items-center">
         <div className="flex flex-col">
           <h1 className='text-3xl font-bold'>
             Workspace
           </h1>
           <p className="text-muted-foreground"> Manage your workflows</p>
         </div>
+        <CreateWorkFlowDialogue />
+        </div>
         <div className="h-full py-6">
           <Suspense fallback={<UserWorkFLowSkeleton />}>
             <UserWorkFlow />
           </Suspense>
-        </div>
       </div>
     </div>
   )
@@ -50,7 +52,7 @@ async function UserWorkFlow() {
   }
   if (workflows.length === 0 ){
     return (
-      <div className='flex flex-col items-center gp-4 justify-center h-full'>
+      <div className='flex flex-col items-center gap-4 justify-center h-full'>
         <div className="rounded-full bg-accent w-20 h-20 flex items-center justify-center">
           <InboxIcon size={40} className='stroke-primary'/>
         </div>
@@ -58,6 +60,7 @@ async function UserWorkFlow() {
           <p className="font-bold"> No Workflow created yet</p>
           <p className="text-sm text-muted-foreground "> Click the button to create your first workflow </p>
         </div>
+        <CreateWorkFlowDialogue triggerText="Create Your First Workflow" />
       </div>
     )
   }
