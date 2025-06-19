@@ -27,7 +27,16 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <ClerkProvider afterSignOutUrl={"/sign-in"}>
+    <ClerkProvider 
+    afterSignOutUrl={"/sign-in"}
+    appearance={{
+      elements: {
+        formButtonPrimary: "bg-primary hover:bg-primary/90 text-white text-sm !shadow-none",
+        formButtonSecondary: "bg-secondary hover:bg-secondary/90 text-sm !shadow-none",
+      },
+    }}
+
+    >
       <html lang="en" className={`${geist.variable}`}>
         <body>
           <AppProviders>

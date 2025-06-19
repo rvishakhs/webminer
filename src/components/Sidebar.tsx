@@ -20,17 +20,17 @@ const routes = [
         icon: IoMdHome,
     },
     {
-        href:"workspace",
+        href:"/workspace",
         label:"Workspace",
         icon: MdWork,
     },
     {
-        href:"credentials",
+        href:"/credentials",
         label:"credentials",
         icon: RiGitRepositoryPrivateFill,
     },
     {
-        href:"reports",
+        href:"/reports",
         label:"Reports",
         icon: TbReportMoney,
     }
@@ -38,10 +38,8 @@ const routes = [
 
 function DesktopSidebar() {
     const pathname = usePathname();
-    const activeRoute = routes.find(
-        (route) => route.href.length > 0 && pathname.includes(route.href)
-    ) || routes[0]; // Default to the first route if none match
-
+    const activeRoute = routes.find((route) => pathname === route.href);
+    console.log("Active Route:", activeRoute);
 
   return (
     <div className='hidden relative md:block min-w-[280px] max-w-[280px] h-screen overflow-hidden w-full 
