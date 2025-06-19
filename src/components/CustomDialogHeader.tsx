@@ -2,11 +2,13 @@
 
 import React from 'react'
 import { DialogHeader, DialogTitle } from './ui/dialog';
+import type { LucideIcon } from 'lucide-react';
+import { cn } from '~/lib/utils';
 
 interface Props {
     tittle?: string;
     subTitle?: string;
-    icon?: string | React.ComponentType<any>;
+    icon?: LucideIcon
 
     iconClassName?: string;
     tittleClassName?: string;
@@ -14,12 +16,16 @@ interface Props {
 }
 
 function CustomDialogHeader(props : Props) {
+
+    const Icon = props.icon;
   return (
-    <DialogHeader className='py-6'>
-        <DialogTitle asChild>
-            <div className='flex flex-col items-center gap-2 mb-2'></div>
-        </DialogTitle>
-    </DialogHeader>
+        <DialogHeader className='py-6'>
+            <DialogTitle asChild>
+                <div className='flex flex-col items-center gap-2 mb-2'>
+                    {Icon && <Icon size={30} className={cn("stroke-primary", props.iconClassName)} />}
+                </div>
+            </DialogTitle>
+        </DialogHeader>
   )
 }
 

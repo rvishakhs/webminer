@@ -21,7 +21,9 @@ function CreateWorkFlowDialogue({triggerText} : {triggerText?: string}) {
             icon={Layers2Icon}
             tittle="Create a New Workflow"
             subTitle="Fill in the details below to create a new workflow."
-          />
+          >
+          
+          </CustomDialogHeader>
         </DialogContent>
     </Dialog>
   )
