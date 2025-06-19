@@ -8,7 +8,9 @@ import DesktopSidebar from '~/components/Sidebar'
 import { ModeToggle } from '~/components/ThemeModeToggle'
 import { Separator } from '~/components/ui/separator'
 import { useTheme } from 'next-themes';
-import { dark, light } from '@clerk/themes'; // adjust import if needed
+import { dark } from '@clerk/themes';
+import { light } from '@clerk/themes';
+
 
 
 function layout({ children }: { children: React.ReactNode }) {

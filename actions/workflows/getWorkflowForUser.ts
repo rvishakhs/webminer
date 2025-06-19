@@ -5,6 +5,8 @@ import { prisma } from "~/lib/prisma";
 
 export async function getWorkflowForUser() {
     const { userId } = await auth();
+    console.log("Fetching workflows for user:", userId);
+    
 
     if (!userId) {
         throw new Error("User is not authenticated");
@@ -15,7 +17,7 @@ export async function getWorkflowForUser() {
             userId
         },
         orderBy: {
-            createdAt: "asc"
+            CreatedAt: "asc"
         }
     })
 }

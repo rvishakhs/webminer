@@ -1,5 +1,5 @@
 import { getWorkflowForUser } from 'actions/workflows/getWorkflowForUser'
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, InboxIcon } from 'lucide-react'
 import React, { Suspense } from 'react'
 import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
 import { Skeleton } from '~/components/ui/skeleton'
@@ -8,7 +8,7 @@ import { waitFor } from '~/lib/helper/waitFor'
 function page() {
   return (
     <div className='flex flex-col h-screen flex-1 '>
-      <div className="flex justify-between">
+      <div className="flex flex-col justify-between">
         <div className="flex flex-col">
           <h1 className='text-3xl font-bold'>
             Workspace
@@ -36,6 +36,7 @@ function UserWorkFLowSkeleton() {
 }
 
 async function UserWorkFlow() {
+  
   const workflows = await getWorkflowForUser();
 
   if (!workflows) {
@@ -47,7 +48,19 @@ async function UserWorkFlow() {
       </Alert>
     )
   }
-  await waitFor(3000);
+  if (workflows.length === 0 ){
+    return (
+      <div className='flex flex-col items-center gp-4 justify-center h-full'>
+        <div className="rounded-full bg-accent w-20 h-20 flex items-center justify-center">
+          <InboxIcon size={40} className='stroke-primary'/>
+        </div>
+        <div className="flex flex-col gap-1 text-center">
+          <p className="font-bold"> No Workflow created yet</p>
+          <p className="text-sm text-muted-foreground "> Click the button to create your first workflow </p>
+        </div>
+      </div>
+    )
+  }
   return <div></div>
 }
 
