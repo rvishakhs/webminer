@@ -1,6 +1,8 @@
 'use client';
 
+import { Layers2Icon } from 'lucide-react';
 import { useState } from 'react';
+import CustomDialogHeader from '~/components/CustomDialogHeader';
 import { Button } from '~/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '~/components/ui/dialog';
 
@@ -14,8 +16,12 @@ function CreateWorkFlowDialogue({triggerText} : {triggerText?: string}) {
                 {triggerText ?? "Create Workflow"}
             </Button>
         </DialogTrigger>
-        <DialogContent >
-
+        <DialogContent className='px-0'>
+          <CustomDialogHeader 
+            icon={Layers2Icon}
+            tittle="Create a New Workflow"
+            subTitle="Fill in the details below to create a new workflow."
+          />
         </DialogContent>
     </Dialog>
   )
