@@ -11,6 +11,7 @@ import { Button } from '~/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '~/components/ui/dialog';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
+import { Textarea } from '~/components/ui/textarea';
 
 function CreateWorkFlowDialogue({ triggerText }: { triggerText?: string }) {
   const [open, setOpen] = useState(false);
@@ -41,9 +42,9 @@ function CreateWorkFlowDialogue({ triggerText }: { triggerText?: string }) {
           subTitle="Fill in the details below to create a new workflow."
         />
 
-        <div className="p-6">
+        <div className="p-4">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
                 name="name"
@@ -63,7 +64,26 @@ function CreateWorkFlowDialogue({ triggerText }: { triggerText?: string }) {
                   </FormItem>
                 )}
               />
-              <Button type="submit">Submit</Button>
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex gap-1 items-center">
+                      Description
+                      <p className="text-xs text-muted-foreground">(optional)</p>
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea className='resize-none' {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Enter a brief description of what your workflow does.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className='w-full hover:bg-primary/90 cursor-pointer'>Submit</Button>
             </form>
           </Form>
         </div>
