@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "~/lib/prisma";
 
 export async function getWorkflowForUser() {
-    const { userId } = auth();
+    const { userId } = await auth();
 
     if (!userId) {
         throw new Error("User is not authenticated");
