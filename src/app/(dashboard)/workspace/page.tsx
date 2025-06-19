@@ -1,9 +1,12 @@
+
+
 import { getWorkflowForUser } from 'actions/workflows/getWorkflowForUser'
 import { AlertCircle, InboxIcon } from 'lucide-react'
 import React, { Suspense } from 'react'
 import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
 import { Skeleton } from '~/components/ui/skeleton'
 import { waitFor } from '~/lib/helper/waitFor'
+import dynamic from 'next/dynamic';
 import CreateWorkFlowDialogue from './_components/CreateWorkFlowDialogue'
 
 function page() {
@@ -64,7 +67,7 @@ async function UserWorkFlow() {
       </div>
     )
   }
-  return <div></div>
+
 }
 
 export default page
