@@ -59,20 +59,28 @@ function WorkFlowCard( {workflow}: {workflow: Workflow}) {
                 >
                     <ShuffleIcon size={16}/> Edit
                 </Link>
-                <WorkFlowActions workflowName={workflow.name}/>
+                <WorkFlowActions 
+                    workflowName={workflow.name}
+                    workflowId={workflow.id}
+                />
             </div>
         </CardContent>
     </Card>
   )
 }
 
-function WorkFlowActions({workflowName} : {workflowName: string}) {
+function WorkFlowActions({workflowName, workflowId} : {workflowName: string, workflowId: string }) {
 
     const [showDelete, setShowDelete] = React.useState(false);
 
     return (
         <>
-        <DeleteWorkflowDialogue open={showDelete} setOpen={setShowDelete} workflowName={workflowName}/>
+        <DeleteWorkflowDialogue 
+            open={showDelete} 
+            setOpen={setShowDelete} 
+            workflowName={workflowName} 
+            workflowId={workflowId}
+        />
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant={"outline"} size={"sm"}>

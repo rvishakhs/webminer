@@ -1,6 +1,9 @@
 'use client'
 
+import { useMutation } from '@tanstack/react-query';
+import { deleteWorkFlows } from 'actions/workflows/deleteWorkFlows';
 import React from 'react'
+import { toast } from 'sonner';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '~/components/ui/alert-dialog'
 import { Input } from '~/components/ui/input';
 
@@ -8,12 +11,25 @@ interface Props {
     open: boolean;
     setOpen: (open: boolean) => void;
     workflowName: string;
+    workflowId: string;
 }
 
 
-function DeleteWorkflowDialogue({open, setOpen, workflowName} : Props) {
+function DeleteWorkflowDialogue({open, setOpen, workflowName, workflowId} : Props) {
 
     const [confirmText, setConfirmText] = React.useState("");
+    const deleteMutation = useMutation({
+        mutationFn: deleteWorkFlows,
+        onSuccess: () => {
+            toast.success("Workflow deleted successfully!", {id: workflowId });
+            setConfirmText("");
+            setOpen(false);
+        },
+        onError: () => {
+            toast.error("Failed to delete workflow. Please try again.", {id: workflowId});
+            console.error("Error deleting workflow");
+        }
+    })
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -38,7 +54,16 @@ function DeleteWorkflowDialogue({open, setOpen, workflowName} : Props) {
             </AlertDialogHeader>
             <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction className='bg-red-500 hover:bg-red-500/60' disabled={confirmText !== workflowName}>Delete</AlertDialogAction>
+                <AlertDialogAction 
+                    className='bg-red-500 hover:bg-red-500/60' 
+                    disabled={confirmText !== workflowName || deleteMutation.isPending}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        toast.loading("Deleting workflow...", {id: workflowId});
+                        deleteMutation.mutate(workflowId)
+                    }}
+
+                >Delete</AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
     </AlertDialog>
