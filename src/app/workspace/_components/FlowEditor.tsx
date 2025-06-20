@@ -13,6 +13,11 @@ import {
 import '@xyflow/react/dist/style.css';
 import { CreateFlowNode } from '~/lib/workflow/CreateFlowNode';
 import { TaskType } from 'types/task';
+import NodeComponent from './nodes/NodeComponent';
+
+const nodeTypes = {
+    WebMinerNode: NodeComponent,
+}
 
 
 function FlowEditor({workflow} : {workflow: Workflow} ) {
@@ -21,7 +26,6 @@ function FlowEditor({workflow} : {workflow: Workflow} ) {
     ]) 
     const [edges, setEdges, onEdgesChange] = useEdgesState([])
 
-    console.log(workflow);
   return (
     <main className='h-full w-full'>
         <ReactFlow
@@ -31,6 +35,7 @@ function FlowEditor({workflow} : {workflow: Workflow} ) {
             onEdgesChange={onEdgesChange}
             fitView
             proOptions={{ hideAttribution: true }}
+            nodeTypes={nodeTypes}
         >
             <Controls position='top-left' />
             <Background variant={BackgroundVariant.Dots} gap={12}/>

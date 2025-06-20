@@ -7,6 +7,7 @@ export function CreateFlowNode(
 ) : AppNodes {
     return {
         id: crypto.randomUUID(),
+        type: "WebMinerNode",
         position: position ?? { x: 0, y: 0 },
         data: {
             type: nodeType,
