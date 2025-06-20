@@ -32,7 +32,7 @@ function CreateWorkFlowDialogue({ triggerText }: { triggerText?: string }) {
       toast.success("Workflow created successfully!", {id: 'create-workflow-success'});
       toast.dismiss('create-workflow-loading');
       setTimeout(() => {
-        redirect(`/dashboard/workspace/${data.data.id}`);
+        redirect(`/workspace/editor/${data.data.id}`);
       }, 1000);
     },
     onError: (error) => {
@@ -52,7 +52,10 @@ function CreateWorkFlowDialogue({ triggerText }: { triggerText?: string }) {
   );
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(open) => {
+      form.reset();
+      setOpen(open); 
+    }}>
       <DialogTrigger asChild>
         <Button>
           {triggerText ?? 'Create Workflow'}
@@ -107,7 +110,7 @@ function CreateWorkFlowDialogue({ triggerText }: { triggerText?: string }) {
                 )}
               />
               <Button disabled={isPending} type="submit" className='w-full hover:bg-primary/90 cursor-pointer'>
-                {isPending && <Loader2 className='animate-spin' />}
+                {isPending && <Loader2 className='animate-spin' /> }
                 {!isPending && "Proceed"}
               </Button>
             </form>

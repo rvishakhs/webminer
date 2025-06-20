@@ -4,9 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "~/lib/prisma";
 
 export async function getWorkflowForUser() {
-    const { userId } = await auth();
-    console.log("Fetching workflows for user:", userId);
-    
+    const { userId } = await auth();    
 
     if (!userId) {
         throw new Error("User is not authenticated");

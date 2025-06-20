@@ -8,6 +8,8 @@ import { Skeleton } from '~/components/ui/skeleton'
 import { waitFor } from '~/lib/helper/waitFor'
 import dynamic from 'next/dynamic';
 import CreateWorkFlowDialogue from './_components/CreateWorkFlowDialogue'
+import WorkFlowCard from './_components/WorkFlowCard'
+import type { Workflow } from '@prisma/client'
 
 function page() {
   return (
@@ -68,6 +70,11 @@ async function UserWorkFlow() {
     )
   }
 
+  return <div className="grid grid-cols-1 gap-4">
+    {workflows.map((workflow : {workflow : Workflow}) => (
+      <WorkFlowCard key={workflow.id} workflow={workflow} />
+    ))}
+  </div>
 }
 
 export default page
