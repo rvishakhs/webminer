@@ -19,6 +19,10 @@ const nodeTypes = {
     WebMinerNode: NodeComponent,
 }
 
+const snapGrid: [number, number] = [50, 50];
+const fitViewOptions = {padding : 1};
+
+
 
 function FlowEditor({workflow} : {workflow: Workflow} ) {
     const [nodes, setNodes, onNodesChange] = useNodesState([
@@ -36,8 +40,11 @@ function FlowEditor({workflow} : {workflow: Workflow} ) {
             fitView
             proOptions={{ hideAttribution: true }}
             nodeTypes={nodeTypes}
+            snapToGrid={true}
+            snapGrid={snapGrid}
+            fitViewOptions={fitViewOptions}
         >
-            <Controls position='top-left' />
+            <Controls position='top-left' fitViewOptions={fitViewOptions}/>
             <Background variant={BackgroundVariant.Dots} gap={12}/>
 
         </ReactFlow>

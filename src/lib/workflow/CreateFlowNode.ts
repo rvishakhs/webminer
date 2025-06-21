@@ -9,8 +9,9 @@ export function CreateFlowNode(
         id: crypto.randomUUID(),
         type: "WebMinerNode",
         position: position ?? { x: 0, y: 0 },
+        dragHandle: ".drag-handle",
         data: {
-            type: nodeType,
+            type: nodeType, 
             inputs: {},
         },
     }
