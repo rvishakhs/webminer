@@ -29,7 +29,7 @@ const fitViewOptions = {padding : 1};
 function FlowEditor({workflow} : {workflow: Workflow} ) {
     const [nodes, setNodes, onNodesChange] = useNodesState<AppNodes>([]) 
     const [edges, setEdges, onEdgesChange] = useEdgesState([])
-    const { setViewport } = useReactFlow();
+    const { setViewport, screenToFlowPosition } = useReactFlow();
 
     useEffect(() => {
         try {
@@ -57,9 +57,13 @@ function FlowEditor({workflow} : {workflow: Workflow} ) {
         const taskType = event.dataTransfer.getData("application/reactflow");
         if (typeof taskType === undefined || !taskType) return;
 
-        const newNodes = CreateFlowNode(taskType as TaskType);
-        setNodes((nds) => nds.concat(newNodes));
+        const position = screenToFlowPosition({
+            x: event.clientX,
+            y: event.clientY,
+        });
 
+        const newNodes = CreateFlowNode(taskType as TaskType, position);
+        setNodes((nds) => nds.concat(newNodes));
     }, [])
 
 
