@@ -55,7 +55,7 @@ function FlowEditor({workflow} : {workflow: Workflow} ) {
     const onDrop = useCallback((event: React.DragEvent) => {
         event.preventDefault();
         const taskType = event.dataTransfer.getData("application/reactflow");
-        if (typeof taskType !== undefined || !taskType) return;
+        if (typeof taskType === undefined || !taskType) return;
 
         const newNodes = CreateFlowNode(taskType as TaskType);
         setNodes((nds) => nds.concat(newNodes));
