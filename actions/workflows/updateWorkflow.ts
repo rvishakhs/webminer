@@ -1,6 +1,7 @@
 "use server"
 
 import { auth } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
 import { WorkflowStatus } from "types/workflow";
 import { prisma } from "~/lib/prisma";
 
@@ -35,6 +36,9 @@ export async function updateWorkflow({id, definition} : {id: string, definition:
             definition: definition
         }
     })
+
+
+    revalidatePath("/workspace");
 
 
 }
