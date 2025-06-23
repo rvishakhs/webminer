@@ -6,14 +6,16 @@ import { useRouter } from 'next/navigation'
 import React from 'react'
 import TooltipWrapper from '~/components/TooltipWrapper'
 import { Button } from '~/components/ui/button'
+import SaveBtn from './SaveBtn'
 
 
 interface Props {
     tittle: string;
     subtittle?: string;
+    workflowId: string;
 }
 
-function topbar({tittle, subtittle} : Props) {
+function topbar({tittle, subtittle, workflowId} : Props) {
     
     const router = useRouter()
 
@@ -40,6 +42,10 @@ function topbar({tittle, subtittle} : Props) {
                     </p>
                 )}
             </div>
+        </div>
+        {/* Here we going to render the save button */}
+        <div className="flex gap-1 flex-1 justify-end">
+            <SaveBtn workflowId={workflowId}/> 
         </div>
     </header>
   )
