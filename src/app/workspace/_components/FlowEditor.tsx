@@ -1,7 +1,7 @@
 'use client'
 
 import type { Workflow } from '@prisma/client'
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import {
     Background,
     BackgroundVariant,
@@ -15,6 +15,7 @@ import '@xyflow/react/dist/style.css';
 import { CreateFlowNode } from '~/lib/workflow/CreateFlowNode';
 import { TaskType } from 'types/task';
 import NodeComponent from './nodes/NodeComponent';
+import { AppNodes } from 'types/appNode';
 
 const nodeTypes = {
     WebMinerNode: NodeComponent,
@@ -26,7 +27,7 @@ const fitViewOptions = {padding : 1};
 
 
 function FlowEditor({workflow} : {workflow: Workflow} ) {
-    const [nodes, setNodes, onNodesChange] = useNodesState([]) 
+    const [nodes, setNodes, onNodesChange] = useNodesState<AppNodes>([]) 
     const [edges, setEdges, onEdgesChange] = useEdgesState([])
     const { setViewport } = useReactFlow();
 
@@ -46,6 +47,21 @@ function FlowEditor({workflow} : {workflow: Workflow} ) {
 
     }, [workflow.definition, setNodes, setEdges, setViewport]) ;
 
+    const onDragOver = useCallback((event: React.DragEvent) => {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+    }, [])
+
+    const onDrop = useCallback((event: React.DragEvent) => {
+        event.preventDefault();
+        const taskType = event.dataTransfer.getData("application/reactflow");
+        if (typeof taskType !== undefined || !taskType) return;
+
+        const newNodes = CreateFlowNode(taskType as TaskType);
+        setNodes((nds) => nds.concat(newNodes));
+
+    }, [])
+
 
   return (
     <main className='h-full w-full'>
@@ -60,6 +76,8 @@ function FlowEditor({workflow} : {workflow: Workflow} ) {
             snapToGrid={true}
             snapGrid={snapGrid}
             fitViewOptions={fitViewOptions}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
         >
             <Controls position='top-left' fitViewOptions={fitViewOptions}/>
             <Background variant={BackgroundVariant.Dots} gap={12}/>
