@@ -10,7 +10,6 @@ import type { AppNodes } from 'types/appNode'
 function NodeParamField({params, nodeId} : {params: TaskParam, nodeId: string}) {
     const { updateNodeData, getNode } = useReactFlow()
     const node = getNode(nodeId) as AppNodes
-    const value = node.data.inputs?.[params.name];
 
     console.log(value)
     const updateNodeParamValue = useCallback(

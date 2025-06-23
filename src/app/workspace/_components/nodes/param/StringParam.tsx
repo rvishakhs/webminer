@@ -7,6 +7,7 @@ import { Label } from '~/components/ui/label'
 
 
 function StringParam({ param , value, updateNodeParamValue}: ParamProps) {
+    const [internalValue, setInternalValue] = React.useState(value);
     const id = useId();
 
   return (
@@ -19,10 +20,12 @@ function StringParam({ param , value, updateNodeParamValue}: ParamProps) {
         </Label>
         <Input 
             id={id} 
-            className='bg-white'
-            value={value} 
+            className='bg-white text-xs'
+            value={internalValue} 
             placeholder='Enter value here'
-            onChange={(e) => updateNodeParamValue(e.target.value)}
+
+            onChange={(e) => setInternalValue(e.target.value)}
+            onBlur={(e) => updateNodeParamValue(e.target.value)}
         /> 
         {param.helperText && (
             <p className="text-muted-foreground px-2">
