@@ -10,6 +10,7 @@ import {
     useEdgesState,
     useNodesState,
     useReactFlow,
+    type Connection,
 } from '@xyflow/react'; 
 import '@xyflow/react/dist/style.css';
 import { CreateFlowNode } from '~/lib/workflow/CreateFlowNode';
@@ -66,6 +67,9 @@ function FlowEditor({workflow} : {workflow: Workflow} ) {
         setNodes((nds) => nds.concat(newNodes));
     }, [])
 
+    const onConnect = useCallback((connection : Connection) => {
+        console.log("@onConnect", connection);
+    }, [])
 
   return (
     <main className='h-full w-full'>
@@ -82,6 +86,7 @@ function FlowEditor({workflow} : {workflow: Workflow} ) {
             fitViewOptions={fitViewOptions}
             onDrop={onDrop}
             onDragOver={onDragOver}
+            onConnect={onConnect}
         >
             <Controls position='top-left' fitViewOptions={fitViewOptions}/>
             <Background variant={BackgroundVariant.Dots} gap={12}/>
