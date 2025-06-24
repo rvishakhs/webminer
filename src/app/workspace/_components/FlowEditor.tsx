@@ -3,9 +3,11 @@
 import type { Workflow } from '@prisma/client'
 import React, { useCallback, useEffect } from 'react'
 import {
+    addEdge,
     Background,
     BackgroundVariant,
     Controls,
+    Edge,
     ReactFlow,
     useEdgesState,
     useNodesState,
@@ -17,9 +19,14 @@ import { CreateFlowNode } from '~/lib/workflow/CreateFlowNode';
 import { TaskType } from 'types/task';
 import NodeComponent from './nodes/NodeComponent';
 import { AppNodes } from 'types/appNode';
+import DeletableEdges from './edges/DeletableEdges';
 
 const nodeTypes = {
     WebMinerNode: NodeComponent,
+}
+
+const edgeTypes = {
+    default: DeletableEdges,
 }
 
 const snapGrid: [number, number] = [50, 50];
@@ -29,7 +36,7 @@ const fitViewOptions = {padding : 1};
 
 function FlowEditor({workflow} : {workflow: Workflow} ) {
     const [nodes, setNodes, onNodesChange] = useNodesState<AppNodes>([]) 
-    const [edges, setEdges, onEdgesChange] = useEdgesState([])
+    const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
     const { setViewport, screenToFlowPosition } = useReactFlow();
 
     useEffect(() => {
@@ -68,7 +75,7 @@ function FlowEditor({workflow} : {workflow: Workflow} ) {
     }, [])
 
     const onConnect = useCallback((connection : Connection) => {
-        console.log("@onConnect", connection);
+        setEdges((eds) => addEdge({ ...connection }, eds));
     }, [])
 
   return (
@@ -81,6 +88,7 @@ function FlowEditor({workflow} : {workflow: Workflow} ) {
             fitView // Need to remove the fitView prop to avoid auto-fit on load
             proOptions={{ hideAttribution: true }}
             nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
             snapToGrid={true}
             snapGrid={snapGrid}
             fitViewOptions={fitViewOptions}
