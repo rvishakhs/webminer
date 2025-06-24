@@ -17,7 +17,7 @@ function TaskMenu() {
                 </AccordionTrigger>
                 <AccordionContent className='flex flex-col gap-1'>
                     <TaskmenuBtn taskType={TaskType.PAGE_TO_HTML}/>
-
+                    <TaskmenuBtn taskType={TaskType.EXTRACT_TEXT_FROM_ELEMENT}/>
                 </AccordionContent>
             </AccordionItem>
         </Accordion>
