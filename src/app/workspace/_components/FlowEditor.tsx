@@ -93,6 +93,10 @@ function FlowEditor({workflow} : {workflow: Workflow} ) {
         console.log("@updateNodeData", node.id)
     }, [setEdges, updateNodeData, nodes])
 
+    const isValidConnection = useCallback((connection: Edge | Connection) => {
+        return true
+    }, []);
+
 
   return (
     <main className='h-full w-full'>
@@ -111,6 +115,7 @@ function FlowEditor({workflow} : {workflow: Workflow} ) {
             onDrop={onDrop}
             onDragOver={onDragOver}
             onConnect={onConnect}
+            isValidConnection={isValidConnection}
         >
             <Controls position='top-left' fitViewOptions={fitViewOptions}/>
             <Background variant={BackgroundVariant.Dots} gap={12}/>
