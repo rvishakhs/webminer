@@ -72,16 +72,16 @@ function FlowEditor({workflow} : {workflow: Workflow} ) {
 
         const newNodes = CreateFlowNode(taskType as TaskType, position);
         setNodes((nds) => nds.concat(newNodes));
-    }, [])
+    }, [screenToFlowPosition, setNodes])
 
     const onConnect = useCallback((connection : Connection) => {
         setEdges((eds) => addEdge({ ...connection }, eds));
-        if (connection.targetHandle) return;
+        if (!connection.targetHandle) return;
+
+
         // Remove input value is is present on connention
         const node = nodes.find((nd) => nd.id === connection.target);
-
         if (!node) return;
-
         const nodeInputs = node.data.inputs;
         updateNodeData(node.id, {
             inputs: {
@@ -89,7 +89,10 @@ function FlowEditor({workflow} : {workflow: Workflow} ) {
                 [connection.targetHandle]: " ", // Clear the input value
             },
         });
-    }, [setEdges, updateNodeData])
+
+        console.log("@updateNodeData", node.id)
+    }, [setEdges, updateNodeData, nodes])
+
 
   return (
     <main className='h-full w-full'>

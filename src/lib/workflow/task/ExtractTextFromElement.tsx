@@ -1,4 +1,4 @@
-import { CodeIcon, GlobeIcon, TextIcon, type LucideProps } from "lucide-react";
+import { CodeIcon, GlobeIcon, TextIcon, Variable, type LucideProps } from "lucide-react";
 import { TaskParamType, TaskType } from "types/task";
 
 export const ExtractTextFromElementTask = {
@@ -10,6 +10,7 @@ export const ExtractTextFromElementTask = {
             name: "Html",
             type: TaskParamType.STRING,
             required: true,
+            Variant : "textarea"
         }, 
         {
             name: "Selector",
