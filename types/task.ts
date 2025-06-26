@@ -16,5 +16,6 @@ export interface TaskParam {
     required?: boolean;
     hideHandle?: boolean; // If true, the handle will not be displayed in the UI
     value?: string;
+    isEntryPoint?: boolean; // If true, this task can be an entry point in the workflow
     [key: string]: any; // Allow additional properties
 }

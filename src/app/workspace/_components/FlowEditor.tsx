@@ -8,6 +8,7 @@ import {
     BackgroundVariant,
     Controls,
     Edge,
+    getOutgoers,
     ReactFlow,
     useEdgesState,
     useNodesState,
@@ -20,6 +21,7 @@ import { TaskType } from 'types/task';
 import NodeComponent from './nodes/NodeComponent';
 import { AppNodes } from 'types/appNode';
 import DeletableEdges from './edges/DeletableEdges';
+import { TaskRegistry } from '~/lib/workflow/task/registry';
 
 const nodeTypes = {
     WebMinerNode: NodeComponent,
@@ -94,8 +96,46 @@ function FlowEditor({workflow} : {workflow: Workflow} ) {
     }, [setEdges, updateNodeData, nodes])
 
     const isValidConnection = useCallback((connection: Edge | Connection) => {
-        return true
-    }, []);
+        // No self connection is allowed 
+        if(connection.source === connection.target) {
+            return false; 
+        }
+
+        // Same taskParam type Connection
+        const source = nodes.find((node) => node.id === connection.source);
+        const target = nodes.find((node) => node.id === connection.target);
+        if(!source || !target) {
+            console.error("Source or target node not found for connection", connection);
+            return false;            
+        }
+
+        const sourceTask = TaskRegistry[source.data.type]
+        const targetTask = TaskRegistry[target.data.type]
+
+        const output = sourceTask.outputs.find(
+            (output) => output.name === connection.sourceHandle
+        )
+
+        const input = targetTask.inputs.find(
+            (input) => input.name === connection.targetHandle
+        )
+
+        console.log("@@Debug" , {input, output})
+        
+        const hasCycle = (node: AppNodes, visited = new Set()) => {
+            if (visited.has(node.id)) return false;
+            visited.add(node.id);
+ 
+        for (const outgoer of getOutgoers(node, nodes, edges)) {
+          if (outgoer.id === connection.source) return true;
+          if (hasCycle(outgoer, visited)) return true;
+        }
+      };
+
+      const detectedCycle = hasCycle(target);
+
+      return !detectedCycle
+    }, [nodes, edges]);
 
 
   return (

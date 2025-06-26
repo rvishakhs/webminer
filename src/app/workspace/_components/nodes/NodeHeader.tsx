@@ -1,15 +1,19 @@
 'use client'
 
-import { CoinsIcon, Grip, GripVerticalIcon } from "lucide-react"
+import { CoinsIcon, CopyIcon, Grip, GripVerticalIcon, TrashIcon } from "lucide-react"
+import { Copse } from "next/font/google"
 import type { TaskType } from "types/task"
 import { Badge } from "~/components/ui/badge"
 import { Button } from "~/components/ui/button"
 import { TaskRegistry } from "~/lib/workflow/task/registry"
+import { useReactFlow } from "@xyflow/react"
 
 
-function NodeHeader({taskType} : {taskType: TaskType}) {
+function NodeHeader({taskType, nodeId} : {taskType: TaskType, nodeId: string}) {
 
     const task = TaskRegistry[taskType]
+    const {deleteElements, getNode} = useReactFlow()
+
   return (
     <div className="flex items-center gap-2 p-2">
         <task.icon size={16} />
@@ -24,7 +28,23 @@ function NodeHeader({taskType} : {taskType: TaskType}) {
                     TODO
 
                 </Badge>
-                <Button 
+                {!task.isEntryPoint && (
+                    <>
+                    <Button 
+                        onClick={() => deleteElements({
+                            nodes: [{id : nodeId}]
+                        })} 
+                        variant={"ghost"} 
+                        size={"icon"}
+                    >
+                        <TrashIcon size={12} />
+                    </Button>
+                    <Button variant={"ghost"} size={"icon"}>
+                        <CopyIcon size={12} />
+                    </Button>
+                    </>
+                )}
+                <Button  
                     variant="ghost"
                     size="icon"
                     className="drag-handle cursor-grabbing"
