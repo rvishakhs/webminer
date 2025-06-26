@@ -7,12 +7,14 @@ import { Badge } from "~/components/ui/badge"
 import { Button } from "~/components/ui/button"
 import { TaskRegistry } from "~/lib/workflow/task/registry"
 import { useReactFlow } from "@xyflow/react"
+import type { AppNodes } from "types/appNode"
+import { CreateFlowNode } from "~/lib/workflow/CreateFlowNode"
 
 
 function NodeHeader({taskType, nodeId} : {taskType: TaskType, nodeId: string}) {
 
     const task = TaskRegistry[taskType]
-    const {deleteElements, getNode} = useReactFlow()
+    const {deleteElements, getNode, addNodes} = useReactFlow()
 
   return (
     <div className="flex items-center gap-2 p-2">
@@ -39,7 +41,21 @@ function NodeHeader({taskType, nodeId} : {taskType: TaskType, nodeId: string}) {
                     >
                         <TrashIcon size={12} />
                     </Button>
-                    <Button variant={"ghost"} size={"icon"}>
+                    <Button 
+                        variant={"ghost"} 
+                        size={"icon"}
+                        onClick={() => {
+                            const node = getNode(nodeId) as AppNodes
+                            const newX = node.position.x + 60
+                            const newY = node.position.y + 60
+                            const newNode = CreateFlowNode(node.data.type, {
+                                x: newX,
+                                y: newY,
+                            });
+                            addNodes([newNode]);
+                            
+                        }}
+                    >
                         <CopyIcon size={12} />
                     </Button>
                     </>
