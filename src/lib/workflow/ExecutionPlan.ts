@@ -24,9 +24,11 @@ export function FlowToExecutionPlan(nodes: AppNodes[], edges: Edge[] ): FlowToEx
         },
     ];
 
+    planned.add(entryPoint.id);
+
     for (
         let phase = 2; 
-        phase <= nodes.length || planned.size < nodes.length; 
+        phase <= nodes.length &&  planned.size < nodes.length; 
         phase++
     ) {
         const nextPhase: WorkFlowExecutionPlanPhase = {phase, nodes: []};
@@ -36,7 +38,7 @@ export function FlowToExecutionPlan(nodes: AppNodes[], edges: Edge[] ): FlowToEx
             }
 
             const invalidInputs = getInvalidInputs(currentNode, edges, planned);
-            if (invalidInputs?.length > 0) {
+            if (invalidInputs.length > 0) {
                 const incomers = getIncomers(currentNode, nodes, edges);
                 if(incomers.every((incomer) => planned.has(incomer.id))) {
                     console.error("Invalid inputs", currentNode.id, invalidInputs);
@@ -46,8 +48,13 @@ export function FlowToExecutionPlan(nodes: AppNodes[], edges: Edge[] ): FlowToEx
                 }
             }
             nextPhase.nodes.push(currentNode);
-            planned.add(currentNode.id);
+            
         }
+
+        for (const node of nextPhase.nodes) {
+            planned.add(node.id);
+        }
+        executionPlan.push( nextPhase);
     }
     return {executionPlan}
 }
@@ -58,7 +65,6 @@ function getInvalidInputs(node: AppNodes, edges: Edge[], planned: Set<string>) {
     for (const input of inputs ) {
         const inputValue = node.data.inputs[input.name];
         const inputValueProvided = inputValue?.length > 0;
-
         if (inputValueProvided) {
             continue;
         }
@@ -76,7 +82,7 @@ function getInvalidInputs(node: AppNodes, edges: Edge[], planned: Set<string>) {
 
         if (requiredInputProvidedByVisitedOutput) {
             continue;
-        } else if (input.required) {
+        } else if (!input.required) {
             if(!inputLinkedByOutput) continue;
             if(inputLinkedByOutput && planned.has(inputLinkedByOutput.source)) {
                 continue
