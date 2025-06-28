@@ -7,6 +7,7 @@ import React from 'react'
 import TooltipWrapper from '~/components/TooltipWrapper'
 import { Button } from '~/components/ui/button'
 import SaveBtn from './SaveBtn'
+import ExecuteBtn from './ExecuteBtn'
 
 
 interface Props {
@@ -45,6 +46,7 @@ function topbar({tittle, subtittle, workflowId} : Props) {
         </div>
         {/* Here we going to render the save button */}
         <div className="flex gap-1 flex-1 justify-end">
+            <ExecuteBtn workflowId={workflowId} />
             <SaveBtn workflowId={workflowId}/> 
         </div>
     </header>
