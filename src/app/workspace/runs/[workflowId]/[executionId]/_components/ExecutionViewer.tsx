@@ -3,9 +3,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { GetWorkFlowExecutionWithPhases } from 'actions/workflows/getWorkFlowExecutionWithPhases';
 import { formatDistanceToNow } from 'date-fns';
-import { Calendar1Icon, CircleDashedIcon, type LucideIcon } from 'lucide-react';
+import { Calendar1Icon, CircleDashedIcon, ClockIcon, WorkflowIcon, type LucideIcon } from 'lucide-react';
 import React from 'react'
 import { WorkFlowExecutionStatus } from 'types/workflow';
+import { Separator } from '~/components/ui/separator';
 
 type ExecutionData = Awaited<ReturnType<typeof GetWorkFlowExecutionWithPhases>>;
 
@@ -30,12 +31,29 @@ function ExecutionViewer({ executiondata }: {excutiondata: ExecutionData}) {
                 <Executionlabel
                     icon={Calendar1Icon}
                     label="Started at"
-                    value={query.data?.startedAt ? formatDistanceToNow(new Date(query.data?.startedAt), {
-                            addSuffix: true,
-                        })
-                         : "-"}
+                    value={
+                        <span className='lowercase'>
+                            {query.data?.startedAt ? formatDistanceToNow(new Date(query.data?.startedAt), {
+                                addSuffix: true,
+                            })
+                            : "-"}
+                        </span>
+                    }
+                />
+                <Executionlabel
+                    icon={ClockIcon}
+                    label="Duration"
+                    value={"Todo"}
                 />
             </div>  
+            <Separator />
+            <div className='flex justify-center items-center px-4 py-2'>
+                <div className='flex items-center gap-2 text-muted-foreground '>
+                    <WorkflowIcon size={20} className='stroke-muted-foreground/80'/>
+                    <span className='font-semibold'>Phases</span>
+                </div>
+            </div>
+            <Separator />
         </aside>
     </div>
   )
@@ -63,7 +81,7 @@ function Executionlabel({
                 />
                 <span>{label}</span>
             </div>
-            <div className="font-semibold capitalize flex gap-2 items-center">
+            <div className="font-semibold capitalize flex gap-2 items-center text-xs">
                 {value}
             </div>
         </div>
