@@ -14,10 +14,11 @@ interface Props {
     tittle: string;
     subtittle?: string;
     workflowId: string;
+    hideBtn?: boolean;
 }
 
-function topbar({tittle, subtittle, workflowId} : Props) {
-    
+function topbar({tittle, subtittle, workflowId, hideBtn=false} : Props) {
+
     const router = useRouter()
 
   return (
@@ -46,8 +47,12 @@ function topbar({tittle, subtittle, workflowId} : Props) {
         </div>
         {/* Here we going to render the save button */}
         <div className="flex gap-1 flex-1 justify-end">
-            <ExecuteBtn workflowId={workflowId} />
-            <SaveBtn workflowId={workflowId}/> 
+            {hideBtn === false && (
+                <>
+                    <ExecuteBtn workflowId={workflowId} />
+                    <SaveBtn workflowId={workflowId}/> 
+                </>
+            )}
         </div>
     </header>
   )

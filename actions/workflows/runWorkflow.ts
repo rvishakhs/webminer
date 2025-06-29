@@ -1,6 +1,7 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import { ExecutionPhaseStatus, WorkFlowExecutionStatus, WorkFlowExecutionTrigger, type WorkFlowExecutionPlan } from "types/workflow";
 import { prisma } from "~/lib/prisma";
 import { FlowToExecutionPlan } from "~/lib/workflow/ExecutionPlan";
@@ -82,6 +83,9 @@ export async function RunWorkflow(form: {
     if (!execution) {
         throw new Error("Execution could not be created");
     }
+
+    redirect(`/workspace/runs/${workflowId}/${execution.id}`,)
+
 }
 
  
