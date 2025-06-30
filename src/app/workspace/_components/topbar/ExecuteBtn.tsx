@@ -8,16 +8,19 @@ import { toast } from 'sonner'
 import { Button } from '~/components/ui/button'
 import useExecutionPlan from '~/hooks/useExecutionPlan'
 import { useReactFlow } from '@xyflow/react'
+import { useRouter } from 'next/navigation'
 
 function ExecuteBtn({ workflowId }: { workflowId: string }) {
     const generte = useExecutionPlan()
+    const router = useRouter();
 
     const { toObject } = useReactFlow();
 
     const mutation = useMutation({
         mutationFn: RunWorkflow,
-        onSuccess: () => {
+        onSuccess: (data) => {
             toast.success("Workflow executed successfully!", {id: "flow-execution"})
+            router.push(data.redirectUrl)
         },
         onError: (error) => {
             console.error("Error executing workflow:", {id: "flow-execution"});

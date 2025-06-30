@@ -84,7 +84,7 @@ export async function RunWorkflow(form: {
         throw new Error("Execution could not be created");
     }
 
-    redirect(`/workspace/runs/${workflowId}/${execution.id}`,)
+    return { redirectUrl: `/workspace/runs/${workflowId}/${execution.id}` };
 
 }
 
