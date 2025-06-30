@@ -9,7 +9,7 @@ import { TaskRegistry } from "~/lib/workflow/task/registry";
 
 export async function RunWorkflow(form: {
     workflowId: string;
-    flowDefinition?: string;
+    flowDefinition: string;
 }) {
     const { userId } = await auth();
     if (!userId) {

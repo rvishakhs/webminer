@@ -14,7 +14,7 @@ export type WorkflowTask = {
     type: TaskType;
     isEntryPoint?: boolean;
     inputs: TaskParam[];
-    outputs: TaskParam[];
+    outputs: TaskParam[];x
 
 }
 

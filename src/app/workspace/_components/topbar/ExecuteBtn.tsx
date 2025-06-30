@@ -31,6 +31,7 @@ function ExecuteBtn({ workflowId }: { workflowId: string }) {
         className='flex items-center gap-2'
         onClick={() => {
             const plan = generte();
+            console.log("Execution Plan:", plan);
             if (!plan) {
                 toast.error("Execution plan is not generated", {id: "flow-execution"});
                 return;

@@ -53,7 +53,7 @@ export function FlowToExecutionPlan(nodes: AppNodes[], edges: Edge[] ): FlowToEx
 
     for (
         let phase = 2; 
-        phase <= nodes.length &&  planned.size < nodes.length; 
+        phase <= nodes.length && planned.size < nodes.length; 
         phase++
     ) {
         const nextPhase: WorkFlowExecutionPlanPhase = {phase, nodes: []};
@@ -82,7 +82,7 @@ export function FlowToExecutionPlan(nodes: AppNodes[], edges: Edge[] ): FlowToEx
         for (const node of nextPhase.nodes) {
             planned.add(node.id);
         }
-        executionPlan.push( nextPhase);
+        executionPlan.push(nextPhase);
     }
 
     if (inputsWithErrors.length > 0) {
