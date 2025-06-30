@@ -3,10 +3,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { GetWorkFlowExecutionWithPhases } from 'actions/workflows/getWorkFlowExecutionWithPhases';
 import { formatDistanceToNow } from 'date-fns';
-import { Calendar1Icon, CircleDashedIcon, ClockIcon, WorkflowIcon, type LucideIcon } from 'lucide-react';
+import { Calendar1Icon, CircleDashedIcon, ClockIcon, Loader, Loader2Icon, WorkflowIcon, type LucideIcon } from 'lucide-react';
 import React from 'react'
 import { WorkFlowExecutionStatus } from 'types/workflow';
+import { Badge } from '~/components/ui/badge';
+import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
+import { DatesToDurationString } from '~/lib/helper/dates';
 
 type ExecutionData = Awaited<ReturnType<typeof GetWorkFlowExecutionWithPhases>>;
 
@@ -18,6 +21,11 @@ function ExecutionViewer({ executiondata }: {excutiondata: ExecutionData}) {
         queryFn: () => GetWorkFlowExecutionWithPhases(executiondata.id),
         refetchInterval: (q) => 
             q.state.data?.status === WorkFlowExecutionStatus.RUNNING ? 1000 : false,    })
+
+    const duration = DatesToDurationString(
+        query.data?.completedAt,
+        query.data?.startedAt
+    )
 
   return (
     <div className="flex w-full h-full">
@@ -43,7 +51,7 @@ function ExecutionViewer({ executiondata }: {excutiondata: ExecutionData}) {
                 <Executionlabel
                     icon={ClockIcon}
                     label="Duration"
-                    value={"Todo"}
+                    value={duration ? (duration) : (<Loader2Icon className='animate-spin text-muted-foreground' size={16} />) }
                 />
             </div>  
             <Separator />
@@ -54,6 +62,20 @@ function ExecutionViewer({ executiondata }: {excutiondata: ExecutionData}) {
                 </div>
             </div>
             <Separator />
+            <div className="overflow-auto h-full px-2 py-4">
+                {query.data?.phases.map((phase, index) => (
+                    <Button
+                        key={phase.id}
+                        variant="ghost"
+                        className='w-full justify-between'
+                    >
+                        <div className='flex items-center gap-2'>
+                            <Badge variant={"outline"}>{index + 1}</Badge>
+                            <p className='font font-semibold'>{phase.name}</p>
+                        </div>
+                    </Button>
+                ))}
+            </div>
         </aside>
     </div>
   )
