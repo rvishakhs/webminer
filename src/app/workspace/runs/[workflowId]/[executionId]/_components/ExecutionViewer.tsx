@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from '@tanstack/react-query';
+import { GetWorkflowDetails } from 'actions/workflows/getWorkflowDetails';
 import { GetWorkFlowExecutionWithPhases } from 'actions/workflows/getWorkFlowExecutionWithPhases';
 import { formatDistanceToNow } from 'date-fns';
 import { Calendar1Icon, CircleDashedIcon, ClockIcon, Loader, Loader2Icon, WorkflowIcon, type LucideIcon } from 'lucide-react';
@@ -15,12 +16,25 @@ type ExecutionData = Awaited<ReturnType<typeof GetWorkFlowExecutionWithPhases>>;
 
 function ExecutionViewer({ executiondata }: {excutiondata: ExecutionData}) {
 
+    const [selectedPhase, setSelectedPhase] = React.useState<string | null>(null);
+    console.log("Selected Phase", selectedPhase);
+
     const query = useQuery({
         queryKey: ["execution", executiondata.id],
         executiondata,
         queryFn: () => GetWorkFlowExecutionWithPhases(executiondata.id),
         refetchInterval: (q) => 
             q.state.data?.status === WorkFlowExecutionStatus.RUNNING ? 1000 : false,    })
+
+    const phaseDetails = useQuery({
+        queryKey: ["phaseDeatils", selectedPhase],
+         enabled: selectedPhase !== null,
+        queryFn: () => GetWorkflowDetails(selectedPhase),
+    });
+    
+    console.log(phaseDetails.data)
+
+    const isRunning = query.data?.status === WorkFlowExecutionStatus.RUNNING;
 
     const duration = DatesToDurationString(
         query.data?.completedAt,
@@ -66,17 +80,28 @@ function ExecutionViewer({ executiondata }: {excutiondata: ExecutionData}) {
                 {query.data?.phases.map((phase, index) => (
                     <Button
                         key={phase.id}
-                        variant="ghost"
+                        variant={selectedPhase === phase.id ? "secondary" : "ghost" }
                         className='w-full justify-between'
-                    >
+                        onClick={() => {
+                            // if (isRunning) return; 
+                            setSelectedPhase(phase.id)}
+                        }
+                     >
                         <div className='flex items-center gap-2'>
                             <Badge variant={"outline"}>{index + 1}</Badge>
                             <p className='font font-semibold'>{phase.name}</p>
                         </div>
+                        <p className='text-xs text-muted-foreground'>{phase.status}</p>
                     </Button>
                 ))}
             </div>
         </aside>
+        <div className='flex w-full h-full'>
+            <pre>
+                {JSON.stringify(phaseDetails.data, null, 2)}
+            </pre>
+
+        </div>
     </div>
   )
 }
@@ -108,4 +133,8 @@ function Executionlabel({
             </div>
         </div>
 )
+}
+
+function GetWorkflowPhaseDetails(selectedPhase: string | null): any {
+    throw new Error('Function not implemented.');
 }
