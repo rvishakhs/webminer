@@ -12,9 +12,7 @@ export async function LaunchBrowserExecutor(environment: ExecutionEnvironment<ty
 
         environment.setBrowser(browser);
         const page = await browser.newPage();
-        await page.goto(websiteUrl!, {
-            waitUntil: 'networkidle2' // Wait for the page to load completely
-        });
+        await page.goto(websiteUrl!)
         environment.setPage(page);
         return true;
     } catch (error) {

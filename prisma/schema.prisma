@@ -46,12 +46,14 @@ model WorkflowExecution {
     createdAt   DateTime    @default(now())
     startedAt   DateTime?
     completedAt DateTime?
+    definition  String  @default("{}")
 
     phases      ExecutionPhase[]
 
 
     workflow    Workflow    @relation(fields:   [workflowId], references:[id],   onDelete: Cascade)
 }
+
 
 
 model ExecutionPhase {

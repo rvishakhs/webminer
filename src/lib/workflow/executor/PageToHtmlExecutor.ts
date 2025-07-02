@@ -6,10 +6,7 @@ import type { PageToHtml } from '../task/PageToHTML';
 export async function PageToHtmlExecutor(environment: ExecutionEnvironment<typeof PageToHtml>): Promise<boolean> {
     try {
         const html = await environment.getPage()!.content();
-        console.log("HTML content retrieved successfully");
-        console.log("@@HTML@@", html);
-
-
+        environment.setOutput("Html", html);
 
         return true;
     } catch (error) {

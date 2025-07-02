@@ -10,6 +10,7 @@ import type { Environment, ExecutionEnvironment } from "types/Executor";
 import { TaskRegistry } from "./task/registry";
 import { TaskParamType } from "types/task";
 import type { Page } from "puppeteer";
+import type { Edge } from "@xyflow/react";
 
 export async function ExecuteWorkflow( executionId: string) {
     const execution = await prisma.workflowExecution.findUnique({
@@ -26,6 +27,8 @@ export async function ExecuteWorkflow( executionId: string) {
         throw new Error("Workflow execution not found");
     }
 
+    const edges = JSON.parse(execution.definition) as Edge[];
+
     // setup execution enviornment
     const environment = {
         phases: {}
@@ -40,7 +43,7 @@ export async function ExecuteWorkflow( executionId: string) {
     let executionFailed = false;
 
     for (const phase of execution.phases) {
-        const phaseExecution = await executeWorkFlowPhase(phase, environment)
+        const phaseExecution = await executeWorkFlowPhase(phase, environment. edges)
         if(!phaseExecution.success) {
             executionFailed = true;
             break;
@@ -121,7 +124,7 @@ async function finalizeWorkFlowExecution(executionId: string, workflowId: string
 }
 
 
-async function executeWorkFlowPhase(phase:ExecutionPhase, environment: Environment) {
+async function executeWorkFlowPhase(phase:ExecutionPhase, environment: Environment, edges: Edge[]) {
     const startedAt = new Date();
 
     let node: AppNodes
@@ -133,7 +136,7 @@ async function executeWorkFlowPhase(phase:ExecutionPhase, environment: Environme
     }
 
 
-    setupEnvironmentForPhase(node, environment);
+    setupEnvironmentForPhase(node, environment, edges);
     // Update phase status 
     await prisma.executionPhase.update({
         where: {id: phase.id},
@@ -146,11 +149,12 @@ async function executeWorkFlowPhase(phase:ExecutionPhase, environment: Environme
 
     const success = await executePhase(phase, node, environment); 
 
+    const outputs = environment.phases[node.id]?.outputs
 
-    await finalizePhase(phase.id, success);
+    await finalizePhase(phase.id, success, outputs);
     return {success}
 }
-async function finalizePhase(id: string, success: boolean) {
+async function finalizePhase(id: string, success: boolean, outputs: any) {
     const finalStatus = success ? ExecutionPhaseStatus.COMPLETED : ExecutionPhaseStatus.FAILED
 
     await prisma.executionPhase.update({
@@ -160,6 +164,7 @@ async function finalizePhase(id: string, success: boolean) {
         data: {
             status : finalStatus,
             completedAt : new Date(),
+            outputs: JSON.stringify(outputs || {}),
         }
     })
 }
@@ -184,7 +189,7 @@ async function executePhase(
     return result;
 }
 
-function setupEnvironmentForPhase(node: AppNodes, environment: Environment) {
+function setupEnvironmentForPhase(node: AppNodes, environment: Environment, edges: Edge) {
     environment.phases[node.id] = {
         inputs: {}, 
         outputs: {},
@@ -199,14 +204,29 @@ function setupEnvironmentForPhase(node: AppNodes, environment: Environment) {
             environment.phases[node.id].inputs[input.name] = inputValue;
             continue;
         }
+        
+        const connectedEdge = edges.find((edge) => edge.target === node.id && edge.targetHandle === input.name);
+
+        if (!connectedEdge) {
+            console.warn(`No input value found for ${input.name} in node ${node.id}`);
+            continue;
+        }
+
+        const outputValue = environment.phases[connectedEdge.source]?.outputs[connectedEdge.sourceHandle];
+
+        environment.phases[node.id].inputs[input.name] = outputValue;
     }
+
 
 
 }
 
 function createExecutionEnvironment(node: AppNodes, environment: Environment): ExecutionEnvironment<any> {
     return {
-        getInput: (name: string) => environment.phases[node.id]?.inputs[name], 
+        getInput: (name: string) => environment.phases[node.id]?.inputs[name],
+        setOutput: (name: string, value:string) => {
+            environment.phases[node.id].outputs[name] = value;
+        },
 
         getBrowser: () => environment.browser,
         setBrowser: (browser: any) => {
