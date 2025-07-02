@@ -5,14 +5,17 @@ import type { LaunchBrowserTask } from '../task/LaunchBrowser';
 
 export async function LaunchBrowserExecutor(environment: ExecutionEnvironment<typeof LaunchBrowserTask>): Promise<boolean> {
     try {
-        const websiteURL = environment.getInput("Website URL");
-        console.log("@@WEBSITEURL", websiteURL);
+        const websiteUrl = environment.getInput("Website URL");
         const browser = await puppeteer.launch({
             headless: false // for testing 
         })
 
-        await waitFor(3000)
-        await browser.close()
+        environment.setBrowser(browser);
+        const page = await browser.newPage();
+        await page.goto(websiteUrl!, {
+            waitUntil: 'networkidle2' // Wait for the page to load completely
+        });
+        environment.setPage(page);
         return true;
     } catch (error) {
         console.error("Error in LaunchBrowserExecutor:", error)
