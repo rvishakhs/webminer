@@ -169,7 +169,7 @@ async function executePhase(
         return false
     }
 
-    const executionEnvironment: ExecutionEnvironment = createExecutionEnvironment(node, environment);
+    const executionEnvironment: ExecutionEnvironment<any> = createExecutionEnvironment(node, environment);
 
     console.log(executionEnvironment)
     const result = await runFn(executionEnvironment);

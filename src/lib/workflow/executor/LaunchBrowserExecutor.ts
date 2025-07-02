@@ -1,8 +1,9 @@
 import puppeteer from 'puppeteer';
 import type { Environment, ExecutionEnvironment } from 'types/Executor';
 import { waitFor } from '~/lib/helper/waitFor';
+import type { LaunchBrowserTask } from '../task/LaunchBrowser';
 
-export async function LaunchBrowserExecutor(environment: ExecutionEnvironment): Promise<boolean> {
+export async function LaunchBrowserExecutor(environment: ExecutionEnvironment<typeof LaunchBrowserTask>): Promise<boolean> {
     try {
         const websiteURL = environment.getInput("Website URL");
         console.log("@@WEBSITEURL", websiteURL);
