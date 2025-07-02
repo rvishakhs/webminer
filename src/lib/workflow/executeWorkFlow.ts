@@ -27,7 +27,7 @@ export async function ExecuteWorkflow( executionId: string) {
         throw new Error("Workflow execution not found");
     }
 
-    const edges = JSON.parse(execution.definition) as Edge[];
+    const edges = JSON.parse(execution.definition).edges as Edge[];
 
     // setup execution enviornment
     const environment = {
@@ -43,7 +43,7 @@ export async function ExecuteWorkflow( executionId: string) {
     let executionFailed = false;
 
     for (const phase of execution.phases) {
-        const phaseExecution = await executeWorkFlowPhase(phase, environment. edges)
+        const phaseExecution = await executeWorkFlowPhase(phase, environment, edges)
         if(!phaseExecution.success) {
             executionFailed = true;
             break;
@@ -189,7 +189,7 @@ async function executePhase(
     return result;
 }
 
-function setupEnvironmentForPhase(node: AppNodes, environment: Environment, edges: Edge) {
+function setupEnvironmentForPhase(node: AppNodes, environment: Environment, edges: Edge[]) {
     environment.phases[node.id] = {
         inputs: {}, 
         outputs: {},
@@ -206,18 +206,17 @@ function setupEnvironmentForPhase(node: AppNodes, environment: Environment, edge
         }
         
         const connectedEdge = edges.find((edge) => edge.target === node.id && edge.targetHandle === input.name);
+        console.log("Connected edge for input:", connectedEdge);
 
         if (!connectedEdge) {
             console.warn(`No input value found for ${input.name} in node ${node.id}`);
             continue;
         }
 
-        const outputValue = environment.phases[connectedEdge.source]?.outputs[connectedEdge.sourceHandle];
+        const outputValue = environment.phases[connectedEdge.source].outputs[connectedEdge.sourceHandle!];
 
         environment.phases[node.id].inputs[input.name] = outputValue;
     }
-
-
 
 }
 
