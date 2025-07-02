@@ -2,6 +2,7 @@
 import "server-only";
 import { prisma } from "../prisma";
 import { ExecutionPhaseStatus, WorkFlowExecutionStatus } from "types/workflow";
+import { waitFor } from "../helper/waitFor";
 
 export async function ExecuteWorkflow( executionId: string) {
     const execution = await prisma.workflowExecution.findUnique({
@@ -31,6 +32,7 @@ export async function ExecuteWorkflow( executionId: string) {
 
     let executionFailed = false;
     for (const phase of execution.phases) {
+        await waitFor(3000)
         // TODO: execute phase
     }
 
@@ -78,6 +80,30 @@ async function initializePhaseStatus(execution: { workflow: { name: string; id: 
 }
 
 async function finalizeWorkFlowExecution(executionId: string, workflowId: string, executionFailed: boolean) {
+    const finalStatus = executionFailed ? WorkFlowExecutionStatus.FAILED : WorkFlowExecutionStatus.COMPLETED
+
+    await prisma.workflowExecution.update({
+        where: {
+            id: executionId
+        },
+        data: {
+            status: finalStatus,
+            completedAt: new Date(),
+        }
+    })
+
+    await prisma.workflow.update({
+        where: {
+            id : workflowId,
+            lastRunId: executionId,
+        },
+        data: {
+            lastRunStatus: finalStatus
+        },
+    }).catch((err) => {
+
+    })
+
 
 
 }
