@@ -6,7 +6,7 @@ import { waitFor } from "../helper/waitFor";
 import type { ExecutionPhase } from "@prisma/client";
 import type { AppNodes } from "types/appNode";
 import { ExecutorRegistry } from "./executor/registry";
-import type { Environment } from "types/Executor";
+import type { Environment, ExecutionEnvironment } from "types/Executor";
 import { TaskRegistry } from "./task/registry";
 
 export async function ExecuteWorkflow( executionId: string) {
@@ -168,8 +168,11 @@ async function executePhase(
     if (!runFn) {
         return false
     }
-    
-    const result = await runFn(environment);
+
+    const executionEnvironment: ExecutionEnvironment = createExecutionEnvironment(node, environment);
+
+    console.log(executionEnvironment)
+    const result = await runFn(executionEnvironment);
     console.log("Execution result:", result); // Add this to debug
 
     return result;
@@ -193,3 +196,9 @@ function setupEnvironmentForPhase(node: AppNodes, environment: Environment) {
 
 }
 
+function createExecutionEnvironment(node: AppNodes, environment: Environment){
+    return {
+        getInput: (name: string) => environment.phases[node.id]?.inputs[name], 
+    
+    }
+}
