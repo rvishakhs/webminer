@@ -118,7 +118,13 @@ async function finalizeWorkFlowExecution(executionId: string, workflowId: string
 async function executeWorkFlowPhase(phase:ExecutionPhase) {
     const startedAt = new Date();
 
-    const node = JSON.parse(phase.node) as AppNodes;
+    let node: AppNodes
+    try {
+        node = JSON.parse(phase.node) as AppNodes;
+    } catch (error) {
+        console.error("Invalid node JSON for phase:", phase.id, error);
+        return { success: false };
+    }
 
     // Update phase status 
     await prisma.executionPhase.update({
@@ -157,6 +163,9 @@ async function executePhase(phase: { number: number; name: string; id: string; u
         return false
     }
     
-    return await runFn();
+    const result = await runFn();
+    console.log("Execution result:", result); // Add this to debug
+
+    return result;
 }
 
