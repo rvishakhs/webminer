@@ -3,6 +3,9 @@ import "server-only";
 import { prisma } from "../prisma";
 import { ExecutionPhaseStatus, WorkFlowExecutionStatus } from "types/workflow";
 import { waitFor } from "../helper/waitFor";
+import type { ExecutionPhase } from "@prisma/client";
+import type { AppNodes } from "types/appNode";
+import { ExecutorRegistry } from "./executor/registry";
 
 export async function ExecuteWorkflow( executionId: string) {
     const execution = await prisma.workflowExecution.findUnique({
@@ -31,8 +34,14 @@ export async function ExecuteWorkflow( executionId: string) {
     await initializePhaseStatus(execution)
 
     let executionFailed = false;
+
     for (const phase of execution.phases) {
-        await waitFor(3000)
+        const phaseExecution = await executeWorkFlowPhase(phase)
+        console.log(phaseExecution)
+        if(!phaseExecution.success) {
+            executionFailed = true;
+            break;
+        }  
         // TODO: execute phase
     }
 
@@ -103,8 +112,51 @@ async function finalizeWorkFlowExecution(executionId: string, workflowId: string
     }).catch((err) => {
 
     })
+}
 
 
+async function executeWorkFlowPhase(phase:ExecutionPhase) {
+    const startedAt = new Date();
 
+    const node = JSON.parse(phase.node) as AppNodes;
+
+    // Update phase status 
+    await prisma.executionPhase.update({
+        where: {id: phase.id},
+        data: {
+            status: ExecutionPhaseStatus.RUNNING,
+            startedAt,        
+        },
+    });
+
+    const success = await executePhase(phase, node);
+
+    console.log(success)
+
+    await finalizePhase(phase.id, success);
+    return {success}
+}
+async function finalizePhase(id: string, success: boolean) {
+    const finalStatus = success ? ExecutionPhaseStatus.COMPLETED : ExecutionPhaseStatus.FAILED
+
+    await prisma.executionPhase.update({
+        where: {
+            id: id
+        }, 
+        data: {
+            status : finalStatus,
+            completedAt : new Date(),
+        }
+    })
+}
+
+async function executePhase(phase: { number: number; name: string; id: string; userId: string; status: string; startedAt: Date | null; completedAt: Date | null; node: string; inputs: string | null; outputs: string | null; creditsCost: number | null; workflowExecutionId: string; }, node: AppNodes): Promise<boolean> {
+    const runFn = ExecutorRegistry[node.data.type];
+
+    if (!runFn) {
+        return false
+    }
+    
+    return await runFn();
 }
 

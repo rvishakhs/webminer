@@ -17,7 +17,6 @@ type ExecutionData = Awaited<ReturnType<typeof GetWorkFlowExecutionWithPhases>>;
 function ExecutionViewer({ executiondata }: {excutiondata: ExecutionData}) {
 
     const [selectedPhase, setSelectedPhase] = React.useState<string | null>(null);
-    console.log("Selected Phase", selectedPhase);
 
     const query = useQuery({
         queryKey: ["execution", executiondata.id],
@@ -32,7 +31,6 @@ function ExecutionViewer({ executiondata }: {excutiondata: ExecutionData}) {
         queryFn: () => GetWorkflowDetails(selectedPhase!),
     });
     
-    console.log(phaseDetails.data)
 
     const isRunning = query.data?.status === WorkFlowExecutionStatus.RUNNING;
 

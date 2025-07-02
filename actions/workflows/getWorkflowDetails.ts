@@ -3,8 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "~/lib/prisma";
 
-export async function GetWorkflowDetails(phaseId: string) {
-    console.log("GetWorkflowDetails function started."); // Add a log at the very start
+export async function GetWorkflowDetails(phaseId: string) { // Add a log at the very start
 
     try {
         const { userId } = await auth();
