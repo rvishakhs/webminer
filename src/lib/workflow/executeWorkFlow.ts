@@ -8,6 +8,8 @@ import type { AppNodes } from "types/appNode";
 import { ExecutorRegistry } from "./executor/registry";
 import type { Environment, ExecutionEnvironment } from "types/Executor";
 import { TaskRegistry } from "./task/registry";
+import { TaskParamType } from "types/task";
+import type { Page } from "puppeteer";
 
 export async function ExecuteWorkflow( executionId: string) {
     const execution = await prisma.workflowExecution.findUnique({
@@ -49,7 +51,10 @@ export async function ExecuteWorkflow( executionId: string) {
 
     // Finalize workflow execution
     await finalizeWorkFlowExecution(executionId, execution.workflowId, executionFailed);
-    // TODO: update execution status
+
+
+    // CleanUp environment
+    await cleanUpEnviornment(environment);
 
 
 }
@@ -134,7 +139,8 @@ async function executeWorkFlowPhase(phase:ExecutionPhase, environment: Environme
         where: {id: phase.id},
         data: {
             status: ExecutionPhaseStatus.RUNNING,
-            startedAt,        
+            startedAt,   
+            inputs: JSON.stringify(environment.phases[node.id]?.inputs || {}),     
         },
     });
 
@@ -186,6 +192,8 @@ function setupEnvironmentForPhase(node: AppNodes, environment: Environment) {
 
     const inputs = TaskRegistry[node.data.type].inputs;
     for (const input of inputs) {
+        if (input.type === TaskParamType.BROWSER_INSTANCE) continue; // Skip browser instance inputs for now
+
         const inputValue = node.data.inputs[input.name];
         if (inputValue) {
             environment.phases[node.id].inputs[input.name] = inputValue;
@@ -196,9 +204,27 @@ function setupEnvironmentForPhase(node: AppNodes, environment: Environment) {
 
 }
 
-function createExecutionEnvironment(node: AppNodes, environment: Environment){
+function createExecutionEnvironment(node: AppNodes, environment: Environment): ExecutionEnvironment<any> {
     return {
         getInput: (name: string) => environment.phases[node.id]?.inputs[name], 
+
+        getBrowser: () => environment.browser,
+        setBrowser: (browser: any) => {
+            environment.browser = browser;
+        },
+
+        getPage: () => environment.page,
+        setPage: (page: Page) => {
+            environment.page = page;
+        }
     
+    }
+}
+
+async function cleanUpEnviornment(environment: Environment) {
+    if(environment.browser){
+        await environment.browser.close().catch((error) => {
+            console.error("Error closing browser:", error);
+        });
     }
 }
