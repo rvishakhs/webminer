@@ -29,7 +29,7 @@ function ExecutionViewer({ executiondata }: {excutiondata: ExecutionData}) {
     const phaseDetails = useQuery({
         queryKey: ["phaseDeatils", selectedPhase],
          enabled: selectedPhase !== null,
-        queryFn: () => GetWorkflowDetails(selectedPhase),
+        queryFn: () => GetWorkflowDetails(selectedPhase!),
     });
     
     console.log(phaseDetails.data)
