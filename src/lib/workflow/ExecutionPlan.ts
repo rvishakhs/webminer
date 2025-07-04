@@ -162,7 +162,7 @@ function getInvalidInputs(node: AppNodes, edges: Edge[], planned: Set<string>) {
     return invalidInputs;
 }
 
-function getIncomers(node, nodes, edges) {
+function getIncomers(node: AppNodes, nodes: AppNodes[], edges: Edge[]) {
   const incomerEdgeIds = edges
     .filter((e) => e.target === node.id)
     .map((e) => e.source);
