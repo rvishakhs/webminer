@@ -12,35 +12,32 @@ export async function ExtractTextFromElementExecutor(environment: ExecutionEnvir
     try {
         const selector = environment.getInput("Selector")
         if (!selector) {
-            console.error(`No text found for selector: ${selector}`)
+            environment.log.Error(`No selector found for ExtractTextFromElementExecutor: ${selector}`);
+            return false;
         }
 
-        console.log("@@Selector", selector)
         const html  = environment.getInput("Html")
         if (!html) {
-            console.error(`No text found for html: ${html}`)
+            environment.log.Error(`No html found for ExtractTextFromElementExecutor: ${html}`);
+            return false;
         }
 
-        console.log("@@HTML", html)
 
         const $ = cheerio.load(html!);
         const elements = $(selector);
 
-        console.log("@@Elements", elements)
         if(!elements) {
-            console.error(`No elements found for selector: ${elements}`);
+            environment.log.Error(`No elements found for selector: ${elements}`);
             return false;
         }
         if (elements.length === 0) {
-        console.error(`No elements found for selector: ${selector}`);
         return false;
 }
 
         // const extractedText = $.text(elements);
         const extractedText = elements.text();
-        console.log("@@Extracted text", extractedText)
         if (!extractedText) {
-            console.error(`No extracted text Found: ${extractedText}`);
+            environment.log.Error(`No text found for selector: ${extractedText}`);
             return false;
         }
 
@@ -48,7 +45,7 @@ export async function ExtractTextFromElementExecutor(environment: ExecutionEnvir
 
         return true;
     } catch (error) {
-        console.error("Error in LaunchBrowserExecutor:", error)
+        environment.log.Error(`Error in ExtractTextFromElementExecutor: ${error}`);
         return false
     }
 }
