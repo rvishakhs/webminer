@@ -17,13 +17,14 @@ function ExecuteBtn({ workflowId }: { workflowId: string }) {
     const { toObject } = useReactFlow();
 
     const mutation = useMutation({
+        mutationKey: ['run-workflow', workflowId],
         mutationFn: RunWorkflow,
         onSuccess: (data) => {
             toast.success("Workflow executed successfully!", {id: "flow-execution"})
             router.push(data.redirectUrl)
         },
         onError: (error) => {
-            console.error("Error executing workflow:", {id: "flow-execution"});
+            console.error("Error executing workflow:", {id: "flow-execution"} , error);
         },
     })
 

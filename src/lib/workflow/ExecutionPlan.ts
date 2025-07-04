@@ -1,5 +1,5 @@
 import type { AppNodeMissingInputs, AppNodes } from "types/appNode";
-import { getIncomers, type Edge } from "@xyflow/react";
+import {  type Edge } from "@xyflow/react";
 import type { WorkFlowExecutionPlan, WorkFlowExecutionPlanPhase } from "types/workflow";
 import { TaskRegistry } from "./task/registry";
 
@@ -64,48 +64,48 @@ export function  FlowToExecutionPlan(nodes: AppNodes[], edges: Edge[] ): FlowToE
             }
 
             const invalidInputs = getInvalidInputs(currentNode, edges, planned);
-            // if (invalidInputs.length > 0) {
-            //     const incomers = getIncomers(currentNode, nodes, edges);
-            //     if(incomers.every((incomer) => planned.has(incomer.id))) {
-            //         console.error("Invalid inputs", currentNode.id, invalidInputs);
-            //         inputsWithErrors.push({
-            //         nodeId: currentNode.id,
-            //         inputs: invalidInputs,
-            //     });
-            //     } else {
-            //         continue; // Skip this node, it has invalid inputs
-            //     }
-            // }
+            if (invalidInputs.length > 0) {
+                const incomers = getIncomers(currentNode, nodes, edges);
+                if(incomers.every((incomer) => planned.has(incomer.id))) {
+                    console.error("Invalid inputs", currentNode.id, invalidInputs);
+                    inputsWithErrors.push({
+                    nodeId: currentNode.id,
+                    inputs: invalidInputs,
+                });
+                } else {
+                    continue; // Skip this node, it has invalid inputs
+                }
+            }
 
             // Trying New Logic
 
-            const incomers = getIncomers(currentNode, nodes, edges);
-            const allDependenciesPlanned = incomers.every((incomer) => planned.has(incomer.id));
+            // const incomers = getIncomers(currentNode, nodes, edges);
+            // const allDependenciesPlanned = incomers.every((incomer) => planned.has(incomer.id));
 
-            if (incomers.length > 0) {
-                // Node has dependencies
-                if (!allDependenciesPlanned) {
-                    continue; // Wait for all connected nodes to be planned
-                }
+            // if (incomers.length > 0) {
+            //     // Node has dependencies
+            //     if (!allDependenciesPlanned) {
+            //         continue; // Wait for all connected nodes to be planned
+            //     }
 
-                // All dependencies planned: check inputs
-                if (invalidInputs.length > 0) {
-                    inputsWithErrors.push({
-                        nodeId: currentNode.id,
-                        inputs: invalidInputs,
-                    });
-                    continue;
-                }
-            } else {
-                // No incomers: standalone node
-                if (invalidInputs.length > 0) {
-                    console.error("Invalid inputs", currentNode.id, invalidInputs);
-                    inputsWithErrors.push({
-                        nodeId: currentNode.id,
-                        inputs: invalidInputs,
-                    });                    
-                }
-            }
+            //     // All dependencies planned: check inputs
+            //     if (invalidInputs.length > 0) {
+            //         inputsWithErrors.push({
+            //             nodeId: currentNode.id,
+            //             inputs: invalidInputs,
+            //         });
+            //         continue;
+            //     }
+            // } else {
+            //     // No incomers: standalone node
+            //     if (invalidInputs.length > 0) {
+            //         console.error("Invalid inputs", currentNode.id, invalidInputs);
+            //         inputsWithErrors.push({
+            //             nodeId: currentNode.id,
+            //             inputs: invalidInputs,
+            //         });                    
+            //     }
+            // }
 
             nextPhase.nodes.push(currentNode);            
         }
@@ -132,7 +132,7 @@ function getInvalidInputs(node: AppNodes, edges: Edge[], planned: Set<string>) {
     const inputs = TaskRegistry[node.data.type].inputs;
     for (const input of inputs ) {
         const inputValue = node.data.inputs[input.name];
-        const inputValueProvided = inputValue?.length! > 0;
+        const inputValueProvided = inputValue?.length > 0;
         if (inputValueProvided) {
             continue;
         }
@@ -160,4 +160,12 @@ function getInvalidInputs(node: AppNodes, edges: Edge[], planned: Set<string>) {
     }
 
     return invalidInputs;
+}
+
+function getIncomers(node, nodes, edges) {
+  const incomerEdgeIds = edges
+    .filter((e) => e.target === node.id)
+    .map((e) => e.source);
+
+  return nodes.filter((n) => incomerEdgeIds.includes(n.id));
 }
