@@ -27,7 +27,8 @@ function ExecutionViewerPage({params} : {
                         <Loader2Icon className='animate-spin stroke-primary h-10 w-10'/>
                     </div>
                 }>
-                    <ExecutionViewerWrapper exeutionId={params.executionId}/>
+                    <ExecutionViewerWrapper executionId={params.executionId} />
+
                 </Suspense>
             </section>
     </div>
@@ -36,9 +37,9 @@ function ExecutionViewerPage({params} : {
 
 export default ExecutionViewerPage
 
-async function ExecutionViewerWrapper({exeutionId} : {exeutionId: string}) {
+async function ExecutionViewerWrapper({executionId} : {executionId: string}) {
 
-    const workflowExecution = await GetWorkFlowExecutionWithPhases(exeutionId);
+    const workflowExecution = await GetWorkFlowExecutionWithPhases(executionId);
     if(!workflowExecution) {
         return <div>
             Not Found

@@ -14,7 +14,7 @@ import { DatesToDurationString } from '~/lib/helper/dates';
 
 type ExecutionData = Awaited<ReturnType<typeof GetWorkFlowExecutionWithPhases>>;
 
-function ExecutionViewer({ executiondata }: {excutiondata: ExecutionData}) {
+export default function ExecutionViewer({ executiondata }: {excutiondata: ExecutionData}) {
 
     const [selectedPhase, setSelectedPhase] = React.useState<string | null>(null);
 
@@ -104,7 +104,6 @@ function ExecutionViewer({ executiondata }: {excutiondata: ExecutionData}) {
   )
 }
 
-export default ExecutionViewer
 
 function Executionlabel({
     icon,

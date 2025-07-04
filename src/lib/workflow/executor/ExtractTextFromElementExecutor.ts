@@ -8,7 +8,7 @@ import { waitFor } from '~/lib/helper/waitFor';
 
 export async function ExtractTextFromElementExecutor(environment: ExecutionEnvironment<typeof ExtractTextFromElementTask>): Promise<boolean> {
     
-    await waitFor(3000)
+
     try {
         const selector = environment.getInput("Selector")
         if (!selector) {
