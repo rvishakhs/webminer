@@ -17,7 +17,7 @@ type FlowToExecutionPlanType = {
     }
 }
 
-export function FlowToExecutionPlan(nodes: AppNodes[], edges: Edge[] ): FlowToExecutionPlanType{
+export function  FlowToExecutionPlan(nodes: AppNodes[], edges: Edge[] ): FlowToExecutionPlanType{
 
     const entryPoint = nodes.find((node) => TaskRegistry[node.data.type].isEntryPoint);
 
@@ -57,26 +57,57 @@ export function FlowToExecutionPlan(nodes: AppNodes[], edges: Edge[] ): FlowToEx
         phase++
     ) {
         const nextPhase: WorkFlowExecutionPlanPhase = {phase, nodes: []};
+
         for(const currentNode of nodes){
             if (planned.has(currentNode.id)) {
                 continue; // Skip already planned nodes
             }
 
             const invalidInputs = getInvalidInputs(currentNode, edges, planned);
-            if (invalidInputs.length > 0) {
-                const incomers = getIncomers(currentNode, nodes, edges);
-                if(incomers.every((incomer) => planned.has(incomer.id))) {
+            // if (invalidInputs.length > 0) {
+            //     const incomers = getIncomers(currentNode, nodes, edges);
+            //     if(incomers.every((incomer) => planned.has(incomer.id))) {
+            //         console.error("Invalid inputs", currentNode.id, invalidInputs);
+            //         inputsWithErrors.push({
+            //         nodeId: currentNode.id,
+            //         inputs: invalidInputs,
+            //     });
+            //     } else {
+            //         continue; // Skip this node, it has invalid inputs
+            //     }
+            // }
+
+            // Trying New Logic
+
+            const incomers = getIncomers(currentNode, nodes, edges);
+            const allDependenciesPlanned = incomers.every((incomer) => planned.has(incomer.id));
+
+            if (incomers.length > 0) {
+                // Node has dependencies
+                if (!allDependenciesPlanned) {
+                    continue; // Wait for all connected nodes to be planned
+                }
+
+                // All dependencies planned: check inputs
+                if (invalidInputs.length > 0) {
+                    inputsWithErrors.push({
+                        nodeId: currentNode.id,
+                        inputs: invalidInputs,
+                    });
+                    continue;
+                }
+            } else {
+                // No incomers: standalone node
+                if (invalidInputs.length > 0) {
                     console.error("Invalid inputs", currentNode.id, invalidInputs);
                     inputsWithErrors.push({
-                    nodeId: currentNode.id,
-                    inputs: invalidInputs,
-                });
-                } else {
-                    continue; // Skip this node, it has invalid inputs
+                        nodeId: currentNode.id,
+                        inputs: invalidInputs,
+                    });                    
                 }
             }
-            nextPhase.nodes.push(currentNode);
-            
+
+            nextPhase.nodes.push(currentNode);            
         }
 
         for (const node of nextPhase.nodes) {
@@ -101,7 +132,7 @@ function getInvalidInputs(node: AppNodes, edges: Edge[], planned: Set<string>) {
     const inputs = TaskRegistry[node.data.type].inputs;
     for (const input of inputs ) {
         const inputValue = node.data.inputs[input.name];
-        const inputValueProvided = inputValue?.length > 0;
+        const inputValueProvided = inputValue?.length! > 0;
         if (inputValueProvided) {
             continue;
         }

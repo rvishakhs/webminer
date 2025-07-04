@@ -7,7 +7,7 @@ import {
     Background,
     BackgroundVariant,
     Controls,
-    Edge,
+    type Edge,
     getOutgoers,
     ReactFlow,
     useEdgesState,
@@ -80,20 +80,36 @@ function FlowEditor({workflow} : {workflow: Workflow} ) {
         setEdges((eds) => addEdge({ ...connection }, eds));
         if (!connection.targetHandle) return;
 
-
         // Remove input value is is present on connention
         const node = nodes.find((nd) => nd.id === connection.target);
         if (!node) return;
         const nodeInputs = node.data.inputs;
+        
         updateNodeData(node.id, {
             inputs: {
                 ...nodeInputs,
-                [connection.targetHandle]: " ", // Clear the input value
+                [connection.targetHandle]: "", // Clear the input value
             },
         });
+        console.log("Updated node inputs after connection", nodeInputs, node.id);
 
-        console.log("@updateNodeData", node.id)
     }, [setEdges, updateNodeData, nodes])
+
+    // const onConnect = useCallback((connection : Connection) => {
+    //     setEdges((eds) => addEdge({ ...connection }, eds));
+    //     if (!connection.targetHandle) return;
+
+    //     // Remove input value is is present on connention
+    //     const node = nodes.find((nd) => nd.id === connection.target);
+    //     if (!node) return;
+    //     const nodeInputs = node.data.inputs;
+    //     delete nodeInputs[connection.targetHandle]; // Remove the input value
+    //     updateNodeData(node.id, {inputs: nodeInputs});
+    //     console.log("Updated node inputs after connection", nodeInputs, node.id);
+
+    // }, [setEdges, updateNodeData, nodes])
+
+    console.log("@Nodes", nodes);
 
     const isValidConnection = useCallback((connection: Edge | Connection) => {
         // No self connection is allowed 
@@ -120,7 +136,11 @@ function FlowEditor({workflow} : {workflow: Workflow} ) {
             (input) => input.name === connection.targetHandle
         )
 
-        console.log("@@Debug" , {input, output})
+
+        if(input?.type !== output?.type) {
+            console.error(`Invalid connection: ${source.data.type} output type ${output?.type} does not match ${target.data.type} input type ${input?.type}`);
+            return false;
+        }
         
         const hasCycle = (node: AppNodes, visited = new Set()) => {
             if (visited.has(node.id)) return false;
