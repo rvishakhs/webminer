@@ -15,8 +15,8 @@ export async function LaunchBrowserExecutor(environment: ExecutionEnvironment<ty
         await page.goto(websiteUrl!)
         environment.setPage(page);
         return true;
-    } catch (error) {
-        console.error("Error in LaunchBrowserExecutor:", error)
+    } catch (error: any) {
+        environment.log.Error(`Error in LaunchBrowserExecutor: ${error.message}`);
         return false
     }
 }

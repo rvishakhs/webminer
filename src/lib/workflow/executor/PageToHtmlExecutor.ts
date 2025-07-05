@@ -9,8 +9,8 @@ export async function PageToHtmlExecutor(environment: ExecutionEnvironment<typeo
         environment.setOutput("Html", html);
 
         return true;
-    } catch (error) {
-        console.error("Error in LaunchBrowserExecutor:", error)
+    } catch (error: any) {
+        environment.log.Error(`Error in PageToHtmlExecutor: ${error.message}`);
         return false
     }
 }

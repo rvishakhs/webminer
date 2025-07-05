@@ -44,8 +44,8 @@ export async function ExtractTextFromElementExecutor(environment: ExecutionEnvir
         environment.setOutput("Extracted Text", extractedText);
 
         return true;
-    } catch (error) {
-        environment.log.Error(`Error in ExtractTextFromElementExecutor: ${error}`);
+    } catch (error: any) {
+        environment.log.Error(`Error in ExtractTextFromElementExecutor: ${error.message}`);
         return false
     }
 }
