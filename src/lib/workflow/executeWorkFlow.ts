@@ -181,7 +181,7 @@ async function finalizePhase(id: string, success: boolean, outputs: any, logColl
                     data: logCollector.getAll().map((log) => ({
                             message: log.message,
                             timestamp: log.timestamp,
-                            level: log.level,
+                            logLevel: log.level,
                     })),
                 },
             },
@@ -203,7 +203,7 @@ async function executePhase(
 
     const executionEnvironment: ExecutionEnvironment<any> = createExecutionEnvironment(node, environment, logCollector);
 
-    console.log(executionEnvironment)
+
     const result = await runFn(executionEnvironment);
     console.log("Execution result:", result); // Add this to debug
 
