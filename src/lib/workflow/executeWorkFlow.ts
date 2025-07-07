@@ -208,14 +208,14 @@ async function finalizePhase(id: string, success: boolean, outputs: any, logColl
             },
         });
 
-        await prisma.ExecutionLog.createMany({
-            data: logCollector.getAll().map((log) => ({
-            message: log.message,
-            timestamp: log.timestamp,
-            logLevel: log.level,
-            executionPhaseId: id, 
-        })),
-        });
+        // await prisma.ExecutionLog.createMany({
+        //     data: logCollector.getAll().map((log) => ({
+        //     message: log.message,
+        //     timestamp: log.timestamp,
+        //     logLevel: log.level,
+        //     executionPhaseId: id, 
+        // })),
+        // });
     } catch (error) {
         console.error("Failed to update execution phase with logs:", error);
     }
