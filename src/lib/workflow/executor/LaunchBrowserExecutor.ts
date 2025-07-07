@@ -16,7 +16,7 @@ export async function LaunchBrowserExecutor(environment: ExecutionEnvironment<ty
         environment.setPage(page);
         return true;
     } catch (error: any) {
-        environment.log.Error(`Error in LaunchBrowserExecutor: ${error.message}`);
+        environment.log.error(`Error in LaunchBrowserExecutor: ${error.message}`);
         return false
     }
 }

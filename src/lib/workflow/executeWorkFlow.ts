@@ -168,25 +168,57 @@ async function executeWorkFlowPhase(
 async function finalizePhase(id: string, success: boolean, outputs: any, logCollector: LogCollector) {
     const finalStatus = success ? ExecutionPhaseStatus.COMPLETED : ExecutionPhaseStatus.FAILED
 
-    await prisma.executionPhase.update({
-        where: {
-            id: id
-        }, 
-        data: {
-            status : finalStatus,
-            completedAt : new Date(),
+    // await prisma.executionPhase.update({
+    //     where: {
+    //         id: id
+    //     }, 
+    //     data: {
+    //         status : finalStatus,
+    //         completedAt : new Date(),
+    //         outputs: JSON.stringify(outputs),
+    //         logs: {
+    //             createMany : {
+    //                 data: logCollector.getAll().map((log) => ({
+    //                         message: log.message,
+    //                         timestamp: log.timestamp,
+    //                         logLevel: log.level,
+    //                 })),
+    //             },
+    //         },
+    //     },
+    // });
+
+    try {
+        await prisma.executionPhase.update({
+            where: { id },
+            data: {
+            status: finalStatus,
+            completedAt: new Date(),
             outputs: JSON.stringify(outputs),
             logs: {
-                createMany : {
-                    data: logCollector.getAll().map((log) => ({
-                            message: log.message,
-                            timestamp: log.timestamp,
-                            logLevel: log.level,
-                    })),
+                createMany: {
+                data: logCollector.getAll().map((log) => ({
+                    message: log.message,
+                    timestamp: log.timestamp,
+                    logLevel: log.level,
+                })),
+                skipDuplicates: true,
                 },
             },
-        },
-    });
+            },
+        });
+
+        await prisma.ExecutionLog.createMany({
+            data: logCollector.getAll().map((log) => ({
+            message: log.message,
+            timestamp: log.timestamp,
+            logLevel: log.level,
+            executionPhaseId: id, 
+        })),
+        });
+    } catch (error) {
+        console.error("Failed to update execution phase with logs:", error);
+    }
 }
 
 async function executePhase(

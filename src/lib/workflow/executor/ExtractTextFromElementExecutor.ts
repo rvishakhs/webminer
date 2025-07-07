@@ -9,16 +9,19 @@ import { waitFor } from '~/lib/helper/waitFor';
 export async function ExtractTextFromElementExecutor(environment: ExecutionEnvironment<typeof ExtractTextFromElementTask>): Promise<boolean> {
     
 
+    console.log("[DEBUG] ExtractTextFromElementExecutor called");
     try {
         const selector = environment.getInput("Selector")
         if (!selector) {
-            environment.log.Error(`No selector found for ExtractTextFromElementExecutor: ${selector}`);
+            console.log("[DEBUG] selector:", selector);
+            environment.log.error(`No selector found for ExtractTextFromElementExecutor: ${selector}`);
             return false;
         }
 
         const html  = environment.getInput("Html")
+        console.log("[DEBUG] html length:", html?.length);
         if (!html) {
-            environment.log.Error(`No html found for ExtractTextFromElementExecutor: ${html}`);
+            environment.log.error(`No html found for ExtractTextFromElementExecutor: ${html}`);
             return false;
         }
 
@@ -27,17 +30,18 @@ export async function ExtractTextFromElementExecutor(environment: ExecutionEnvir
         const elements = $(selector);
 
         if(!elements) {
-            environment.log.Error(`No elements found for selector: ${elements}`);
+            environment.log.error(`No elements found for selector: ${elements}`);
             return false;
         }
         if (elements.length === 0) {
-        return false;
-}
+            environment.log.error(`No elements found for selector: ${selector}`);
+            return false;
+        }
 
         // const extractedText = $.text(elements);
         const extractedText = elements.text();
         if (!extractedText) {
-            environment.log.Error(`No text found for selector: ${extractedText}`);
+            environment.log.error(`No text found for selector: ${extractedText}`);
             return false;
         }
 
@@ -45,7 +49,7 @@ export async function ExtractTextFromElementExecutor(environment: ExecutionEnvir
 
         return true;
     } catch (error: any) {
-        environment.log.Error(`Error in ExtractTextFromElementExecutor: ${error.message}`);
+        environment.log.error(`Error in ExtractTextFromElementExecutor: ${error.message}`);
         return false
     }
 }

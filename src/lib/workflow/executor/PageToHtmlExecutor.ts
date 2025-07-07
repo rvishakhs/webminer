@@ -10,7 +10,7 @@ export async function PageToHtmlExecutor(environment: ExecutionEnvironment<typeo
 
         return true;
     } catch (error: any) {
-        environment.log.Error(`Error in PageToHtmlExecutor: ${error.message}`);
+        environment.log.error(`Error in PageToHtmlExecutor: ${error.message}`);
         return false
     }
 }

@@ -1,4 +1,4 @@
-export const LogLevels = ["Info", "Warning", "Error"] as const;
+export const LogLevels = ["info", "warning", "error"] as const;
 export type LogLevel = (typeof LogLevels)[number];
 
 export type LogFunction = (message: string) => void;
