@@ -20,6 +20,13 @@ export async function GetWorkflowDetails(phaseId: string) { // Add a log at the 
             where: {
                 id: phaseId,
                 userId: userId, // Ensure the phase belongs to the authenticated user
+            },
+            include: {
+                logs: {
+                    orderBy: {
+                        timestamp: 'asc', // Order logs by timestamp in ascending order
+                    },
+                }
             }
         });
 

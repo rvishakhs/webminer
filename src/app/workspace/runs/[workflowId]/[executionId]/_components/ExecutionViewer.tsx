@@ -95,9 +95,22 @@ export default function ExecutionViewer({ executiondata }: {excutiondata: Execut
             </div>
         </aside>
         <div className='flex w-full h-full'>
-            <pre>
-                {JSON.stringify(phaseDetails.data, null, 2)}
-            </pre>
+            {isRunning && (
+                <div className=" flex items-center justify-center flex-col gap-2 h-full w-full">
+                    <p className="font-bold">Run is in Progess, Please wait</p>
+                    <Loader className='animate-spin' size={32} />
+                </div>
+            )}
+            {!isRunning && !selectedPhase && (
+                <div className="flex items-center flex-col gap-2 justify-center h-full w-full">
+                    <div className="flex flex-col gap-1 text-center">
+                        <p className="font-bold">No Phase selected</p>
+                        <p className="font-sm text-muted-foreground">Select a Phase to view the details </p>
+                    </div>
+                </div>
+            )}
+            
+
 
         </div>
     </div>
