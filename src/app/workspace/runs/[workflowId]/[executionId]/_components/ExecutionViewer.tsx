@@ -7,8 +7,10 @@ import { formatDistanceToNow } from 'date-fns';
 import { Calendar1Icon, CircleDashedIcon, ClockIcon, Loader, Loader2Icon, WorkflowIcon, type LucideIcon } from 'lucide-react';
 import React from 'react'
 import { WorkFlowExecutionStatus } from 'types/workflow';
+import { object } from 'zod';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
 import { Separator } from '~/components/ui/separator';
 import { DatesToDurationString } from '~/lib/helper/dates';
 
@@ -109,7 +111,17 @@ export default function ExecutionViewer({ executiondata }: {excutiondata: Execut
                     </div>
                 </div>
             )}
-            
+
+            {!isRunning && selectedPhase && phaseDetails.data && (
+                <div className="flex flex-col py-4 container gap-4 overflow-auto">
+                    <ParamsViewer
+                        title="Inputs"
+                        subtittle="Inputs for the selected phase"
+                        paramsJson={phaseDetails.data.inputs}
+                    />
+                </div>
+            )}
+
 
 
         </div>
@@ -147,4 +159,33 @@ function Executionlabel({
 
 function GetWorkflowPhaseDetails(selectedPhase: string | null): any {
     throw new Error('Function not implemented.');
+}
+
+
+function ParamsViewer({title, subtittle, paramsJson}: {
+    title: string;
+    subtittle: string;
+    paramsJson: string | null;
+}) {
+
+    const params = paramsJson ? JSON.parse(paramsJson) : undefined;
+
+    return (
+        <Card>
+            <CardHeader className='rounded-lg rounded-b-none border-b py-4 bg-gray-50 dark:bg-background'>    
+                <CardTitle className='text-base'>
+                    {title}
+                </CardTitle>
+                <CardDescription className='text-muted-foreground text-sm'>
+                    {subtittle}
+                </CardDescription>
+            </CardHeader>
+            <CardContent className='py-4'>
+                {(!params || Object.keys(params).length === 0) && (
+                    <p className='text-muted-foreground text-sm'>No parameters found</p>
+                )}
+            </CardContent>
+        </Card>
+    )
+
 }
