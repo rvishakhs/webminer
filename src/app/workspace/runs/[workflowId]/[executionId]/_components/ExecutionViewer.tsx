@@ -6,7 +6,7 @@ import { GetWorkflowDetails } from 'actions/workflows/getWorkflowDetails';
 import { GetWorkFlowExecutionWithPhases } from 'actions/workflows/getWorkFlowExecutionWithPhases';
 import { formatDistanceToNow } from 'date-fns';
 import { Calendar1Icon, CircleDashedIcon, ClockIcon, Loader, Loader2Icon, WorkflowIcon, type LucideIcon } from 'lucide-react';
-import React from 'react'
+import React, { useEffect } from 'react'
 import { WorkFlowExecutionStatus } from 'types/workflow';
 import { object } from 'zod';
 import { Badge } from '~/components/ui/badge';
