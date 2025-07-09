@@ -8,6 +8,7 @@ import TooltipWrapper from '~/components/TooltipWrapper'
 import { Button } from '~/components/ui/button'
 import SaveBtn from './SaveBtn'
 import ExecuteBtn from './ExecuteBtn'
+import NavigationTabs from './NavigationTabs'
 
 
 interface Props {
@@ -45,6 +46,7 @@ function topbar({tittle, subtittle, workflowId, hideBtn=false} : Props) {
                 )}
             </div>
         </div>
+        <NavigationTabs workflowid={workflowId} />
         {/* Here we going to render the save button */}
         <div className="flex gap-1 flex-1 justify-end">
             {hideBtn === false && (
