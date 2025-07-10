@@ -2,7 +2,15 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { GetWorkflowexecutions } from 'actions/workflows/getWorkflowexecutions';
+
 import React from 'react'
+import { Badge } from '~/components/ui/badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/table';
+import { DatesToDurationString } from '~/lib/helper/dates';
+import ExecutionStatusIndicator from './ExecutionstatusIndicator';
+import type { WorkFlowExecutionStatus } from 'types/workflow';
+import { formatDistanceToNow } from 'date-fns';
+
 
 type InitialDataType = Awaited<ReturnType<typeof GetWorkflowexecutions>>;
 
@@ -13,12 +21,63 @@ function ExecutionsTable({workflowid, initialdata} : {workflowid: string, initia
         queryKey: ['executions', workflowid],
         initialdata,
         queryFn: () => GetWorkflowexecutions(workflowid),
-        refetchInterval: 5000, // 5 seconds
+        refetchInterval: 5000, // 5 secondssilly galootda
     })
   return (
-    <pre>
-        {JSON.stringify(query.data, null, 4)}
-    </pre>
+    <div className="border rounded-lg shadow-md overflow-auto">
+        <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHead>Id</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className='text-right text-xs text-muted-foreground'>Started at</TableHead>
+                </TableRow>                
+            </TableHeader>
+            <TableBody className='gap-2 h-full overflow-auto'>
+                {query.data?.map((execution) => {
+                    const duration = DatesToDurationString(execution.completedAt, execution.startedAt);
+
+                    const formattedStartedAt = execution.startedAt && formatDistanceToNow(execution.startedAt, {
+                        addSuffix: true
+                    })
+
+                    return (
+                        <TableRow key={execution.id}>
+                            <TableCell>
+                                <div className='flex flex-col'>
+                                    <span className='font-semibold'>{execution.id}</span>
+                                    <div className='text-muted-foreground text-xs'>
+                                        <span>
+                                            Triggered Via
+                                        </span>
+                                        <Badge variant={"outline"}>
+                                            {execution.trigger}
+                                        </Badge>
+                                    </div>
+                                </div>
+                            </TableCell>
+                            <TableCell>
+                                <div className='flex flex-col'>
+
+                                    <div className='flex gap-2 items-center'>
+                                    <ExecutionStatusIndicator status={execution.status as WorkFlowExecutionStatus}  />
+                                    <span className='font-semibold capitalize'>{execution.status}</span>
+                                    </div>
+                                </div>
+                                    <div className='text-muted-foreground text-xs mx-5'>
+                                        {duration}
+                                    </div>
+                            </TableCell>
+                            <TableCell className='text-right text-muted-foreground'>
+                                {formattedStartedAt}
+                            </TableCell>
+                        </TableRow>
+                    )
+                })}
+            </TableBody>
+
+        </Table>
+    </div>
   )
 }
 
