@@ -10,12 +10,15 @@ import { DatesToDurationString } from '~/lib/helper/dates';
 import ExecutionStatusIndicator from './ExecutionstatusIndicator';
 import type { WorkFlowExecutionStatus } from 'types/workflow';
 import { formatDistanceToNow } from 'date-fns';
+import { useRouter } from 'next/navigation';
 
 
 type InitialDataType = Awaited<ReturnType<typeof GetWorkflowexecutions>>;
 
 
 function ExecutionsTable({workflowid, initialdata} : {workflowid: string, initialdata: InitialDataType}) {
+
+    const router = useRouter()
 
     const query = useQuery({
         queryKey: ['executions', workflowid],
@@ -27,10 +30,10 @@ function ExecutionsTable({workflowid, initialdata} : {workflowid: string, initia
     <div className="border rounded-lg shadow-md overflow-auto">
         <Table>
             <TableHeader>
-                <TableRow>
-                    <TableHead>Id</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className='text-right text-xs text-muted-foreground'>Started at</TableHead>
+                <TableRow className='bg-muted text-muted-foreground '>
+                    <TableHead className='font-bold'>Id</TableHead>
+                    <TableHead className='font-bold'>Status</TableHead>
+                    <TableHead className='text-right text-xs text-muted-foreground font-bold'>Started at</TableHead>
                 </TableRow>                
             </TableHeader>
             <TableBody className='gap-2 h-full overflow-auto'>
@@ -42,7 +45,13 @@ function ExecutionsTable({workflowid, initialdata} : {workflowid: string, initia
                     })
 
                     return (
-                        <TableRow key={execution.id}>
+                        <TableRow 
+                            key={execution.id} 
+                            className='cursor-pointer'
+                            onClick={() => {
+                                router.push(`/workspace/runs/${workflowid}/${execution.id}`);
+                            }}
+                        >
                             <TableCell>
                                 <div className='flex flex-col'>
                                     <span className='font-semibold'>{execution.id}</span>

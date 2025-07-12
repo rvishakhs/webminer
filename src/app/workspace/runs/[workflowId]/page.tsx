@@ -55,7 +55,9 @@ async function ExecutionsTablewrapper({workflowId}: {workflowId: string}) {
     }
 
     return (
-        <ExecutionsTable workflowid={workflowId} initialdata={executions}/>
+        <div className='container py-6 w-full mx-auto'>
+            <ExecutionsTable workflowid={workflowId} initialdata={executions}/>
+        </div>
 
         // <pre>
         //     {JSON.stringify(executions, null, 4)}
