@@ -21,10 +21,11 @@ function PublishBtn({ workflowId }: { workflowId: string }) {
         // mutationKey: ['run-workflow', workflowId],
         mutationFn: publishWorkFlow,
         onSuccess: (data) => {
-            toast.success("Workflow Published", {id: workflowId})
-            // router.push(data.redirectUrl)
+            toast.success(data.message, {id: workflowId})
+            router.push(data.redirectUrl)
         },
-        onError: (error) => {
+        onError: (error, data) => {
+            toast.warning(data.message)
             console.error("Error executing workflow:", {id: workflowId} , error);
         },
     })

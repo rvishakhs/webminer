@@ -20,6 +20,7 @@ function ExecutionViewerPage({params} : {
             tittle='Execution Viewer'
             subtittle={`RUN ID: ${params.executionId}`}
             hideBtn
+            
             />
             <section className='flex h-full overflow-auto'>
                 <Suspense fallback={

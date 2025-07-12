@@ -25,7 +25,7 @@ export async function publishWorkFlow({id, definition}: {id: string, definition:
     }
 
     if (workflow.status !== WorkflowStatus.DRAFT){
-        throw new Error("Workflow is not in draft status")
+        return { redirectUrl: `/workspace` , message: "Workflow is already published or not in draft status" }; 
     }
 
     const flow = JSON.parse(definition);
@@ -51,8 +51,7 @@ export async function publishWorkFlow({id, definition}: {id: string, definition:
         }
     })
 
-    revalidatePath(`/workspace/editor/${id}`)
 
-    // return { redirectUrl: `/workspace/runs/${workflowId}/${execution.id}` };
+    return { redirectUrl: `/workspace`, message: "Workflow published successfully" };
 
 }
