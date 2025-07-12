@@ -21,6 +21,7 @@ model Workflow {
     description String?
     
     definition String?
+    executionPlan String?
     status String  
 
     lastRunAt   DateTime?
