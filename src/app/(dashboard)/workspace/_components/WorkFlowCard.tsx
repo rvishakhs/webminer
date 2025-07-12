@@ -11,6 +11,7 @@ import { Card, CardContent } from '~/components/ui/card';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '~/components/ui/dropdown-menu';
 import { cn } from '~/lib/utils';
 import DeleteWorkflowDialogue from './DeleteWorkflowDialogue';
+import RunBtn from '~/app/workspace/_components/RunBtn';
 
 const statusColors = {
     [WorkflowStatus.DRAFT]: 'bg-yellow-300 text-yellow-600', 
@@ -47,6 +48,7 @@ function WorkFlowCard( {workflow}: {workflow: Workflow}) {
                 </div>
             </div>
             <div className="flex items-center space-x-2">
+                {!isDraft && <RunBtn workflowId={workflow.id} />}
                 <Link
                     href={`/workspace/editor/${workflow.id}`}
                     className={cn(buttonVariants({
