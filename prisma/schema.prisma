@@ -24,9 +24,12 @@ model Workflow {
     executionPlan String?
     status String  
 
+    cron String?
+
     lastRunAt   DateTime?
     lastRunId   String?
     lastRunStatus   String?
+    nextRunAt   DateTime?
     
     CreatedAt DateTime @default(now())
     updatedAt DateTime @updatedAt

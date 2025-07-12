@@ -1,7 +1,7 @@
 "use client";
 
 import type { Workflow } from '@prisma/client';
-import { FileTextIcon, MoreVerticalIcon, PlayIcon, ShuffleIcon, TrashIcon } from 'lucide-react';
+import { CornerDownRightIcon, FileTextIcon, MoreVerticalIcon, PlayIcon, ShuffleIcon, TrashIcon } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react'
 import { WorkflowStatus } from 'types/workflow';
@@ -12,6 +12,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { cn } from '~/lib/utils';
 import DeleteWorkflowDialogue from './DeleteWorkflowDialogue';
 import RunBtn from '~/app/workspace/_components/RunBtn';
+import SchedulerDialog from './SchedulerDialog';
 
 const statusColors = {
     [WorkflowStatus.DRAFT]: 'bg-yellow-300 text-yellow-600', 
@@ -45,6 +46,7 @@ function WorkFlowCard( {workflow}: {workflow: Workflow}) {
                             </span>
                         )}
                     </h3>
+                    <WorkFlowScheduler isDraft={isDraft} />
                 </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -104,6 +106,18 @@ function WorkFlowActions({workflowName, workflowId} : {workflowName: string, wor
         </DropdownMenu>
         </>
     );
+}
+
+function WorkFlowScheduler({isDraft}: {isDraft?: boolean}) {
+
+    if (isDraft) return null;
+
+    return (
+        <div className='flex items-center gap-2'>
+            <CornerDownRightIcon  className='w-4 h-4 text-muted-foreground'/>
+            <SchedulerDialog />
+        </div>
+    )
 }
 
 export default WorkFlowCard
