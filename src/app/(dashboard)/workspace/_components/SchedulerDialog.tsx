@@ -3,7 +3,7 @@
 import { DialogClose } from '@radix-ui/react-dialog'
 import { useMutation } from '@tanstack/react-query'
 import { UpdateWorkflowCron } from 'actions/workflows/updateWorkflowCron'
-import { Calendar, FileQuestionIcon, HelpCircleIcon, TriangleAlertIcon, Workflow } from 'lucide-react'
+import { AlarmClockPlus, Calendar, Clock2Icon, FileQuestionIcon, HelpCircleIcon, TriangleAlertIcon, Workflow } from 'lucide-react'
 import React, { useEffect } from 'react'
 import { toast } from 'sonner'
 import CustomDialogHeader from '~/components/CustomDialogHeader'
@@ -15,10 +15,11 @@ import cronstrue from 'cronstrue';
 import { set } from 'date-fns'
 import { Tooltip } from 'recharts'
 import TooltipWrapper from '~/components/TooltipWrapper'
+import CronExpressionParser from 'cron-parser'
 
 function SchedulerDialog(props: {cron: string | null,  workflowId: string }) {
 
-    const [cron, setCron ] = React.useState(props.cron)
+    const [cron, setCron ] = React.useState(props.cron || "")
     const [validCron, setvalidCron ] = React.useState<boolean>(false)
     const [humanCronstring, sethumanCronstring ] = React.useState<string>("")
 
@@ -33,8 +34,11 @@ function SchedulerDialog(props: {cron: string | null,  workflowId: string }) {
         },
     })
 
+
+
     useEffect(() => {
         try {
+            CronExpressionParser.parse(cron, {tz: 'UTC'})
             const humanCronStr = cronstrue.toString(cron!);
             setvalidCron(true);
             sethumanCronstring(humanCronStr);
@@ -43,19 +47,34 @@ function SchedulerDialog(props: {cron: string | null,  workflowId: string }) {
         }
     }, [cron])
 
+    const workflowHasValidCron = props.cron && props.cron.length > 0;
+    const readableSavedCron = workflowHasValidCron && cronstrue.toString(props.cron!);
+
+
   return (
     <Dialog>
         <DialogTrigger asChild>
             <Button
                 variant={"link"}
                 size={"sm"}
-                className={cn("text-sm p-0 h-auto cursor-pointer  ")}
+                className={cn("text-sm p-0 h-auto cursor-pointer text-orange-400", workflowHasValidCron && "text-primary")}
             >
 
-                <div className='flex items-center gap-1'>
-                    <TriangleAlertIcon className='w-3 h-4 mr-1 text-accent-foreground'/>
-                    Set schedule
-                </div>
+                {workflowHasValidCron && (
+                    <div className="flex items-center gap-2 text-sm">
+                        <Clock2Icon className='h-4 w-4'/>
+                        {humanCronstring}
+                    </div>
+                )}
+
+                {!workflowHasValidCron && (
+                    <div className='flex items-center gap-1'>
+                        <AlarmClockPlus className='w-4 h-4 '/>
+                        Set schedule
+                    </div>
+                )}
+
+
             </Button>
         </DialogTrigger>
         <DialogContent className='px-0'>
@@ -88,7 +107,7 @@ function SchedulerDialog(props: {cron: string | null,  workflowId: string }) {
                     <DialogClose asChild >
                         <Button 
                             className='w-full' 
-                            disabled={mutation.isPending}
+                            disabled={mutation.isPending || !validCron}
                             onClick={() => {
                                 toast.loading("Saving schedule..." , {id: "cron"})
                                 mutation.mutate({
