@@ -16,9 +16,9 @@ import { set } from 'date-fns'
 import { Tooltip } from 'recharts'
 import TooltipWrapper from '~/components/TooltipWrapper'
 
-function SchedulerDialog({ WorkflowId }: { WorkflowId: string }) {
+function SchedulerDialog(props: {cron: string | null,  workflowId: string }) {
 
-    const [cron, setCron ] = React.useState<string>("")
+    const [cron, setCron ] = React.useState(props.cron)
     const [validCron, setvalidCron ] = React.useState<boolean>(false)
     const [humanCronstring, sethumanCronstring ] = React.useState<string>("")
 
@@ -35,7 +35,7 @@ function SchedulerDialog({ WorkflowId }: { WorkflowId: string }) {
 
     useEffect(() => {
         try {
-            const humanCronStr = cronstrue.toString(cron);
+            const humanCronStr = cronstrue.toString(cron!);
             setvalidCron(true);
             sethumanCronstring(humanCronStr);
         } catch (error) {
@@ -71,7 +71,7 @@ function SchedulerDialog({ WorkflowId }: { WorkflowId: string }) {
                 </p>
                 <Input 
                     placeholder='E.g. * * * * * *'
-                    value={cron}
+                    value={cron!}
                     onChange={(e) => setCron(e.target.value)}
                 />
 
@@ -92,7 +92,7 @@ function SchedulerDialog({ WorkflowId }: { WorkflowId: string }) {
                             onClick={() => {
                                 toast.loading("Saving schedule..." , {id: "cron"})
                                 mutation.mutate({
-                                    id: WorkflowId,
+                                    id: props.workflowId,
                                     cron: cron
                                 })
                             }}    

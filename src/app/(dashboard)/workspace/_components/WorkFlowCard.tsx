@@ -22,8 +22,6 @@ const statusColors = {
 
 function WorkFlowCard( {workflow}: {workflow: Workflow}) {
 
-    console.log("Workflow Card", workflow);
-
     const isDraft = workflow.status === WorkflowStatus.DRAFT;
   return (
     <Card className='border border-separate shadow-sm rounded-lg overflow-hidden 
@@ -46,7 +44,7 @@ function WorkFlowCard( {workflow}: {workflow: Workflow}) {
                             </span>
                         )}
                     </h3>
-                    <WorkFlowScheduler isDraft={isDraft} workflowId={workflow.id} />
+                    <WorkFlowScheduler isDraft={isDraft} workflowId={workflow.id} cron={workflow.cron}/>
                 </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -108,14 +106,14 @@ function WorkFlowActions({workflowName, workflowId} : {workflowName: string, wor
     );
 }
 
-function WorkFlowScheduler({isDraft, workflowId}: {isDraft?: boolean, workflowId: string}) {
+function WorkFlowScheduler({isDraft, workflowId, cron}: {isDraft?: boolean, workflowId: string, cron: string}) {
 
     if (isDraft) return null;
 
     return (
         <div className='flex items-center gap-2'>
             <CornerDownRightIcon  className='w-4 h-4 text-muted-foreground'/>
-            <SchedulerDialog WorkflowId={workflowId}/>
+            <SchedulerDialog workflowId={workflowId} cron={cron}/>
         </div>
     )
 }
