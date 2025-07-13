@@ -2,7 +2,7 @@
 
 import { auth } from "@clerk/nextjs/server"
 import { prisma } from "~/lib/prisma"
-import parser from "cron-parser";
+import { CronExpressionParser } from 'cron-parser';
 
 export async function UpdateWorkflowCron({id, cron}:{id: string, cron: string}) {
     
@@ -13,7 +13,7 @@ export async function UpdateWorkflowCron({id, cron}:{id: string, cron: string}) 
     }
 
     try {
-        const interval = parser.parseExpression(cron, {utc: true});
+        const interval = CronExpressionParser.parse(cron, {tz: 'UTC'});
         return await prisma.workflow.update({
             where: {
                 id,
