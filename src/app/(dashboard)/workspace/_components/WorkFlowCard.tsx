@@ -1,10 +1,10 @@
 "use client";
 
 import type { Workflow } from '@prisma/client';
-import { CornerDownRightIcon, FileTextIcon, MoreVerticalIcon, PlayIcon, ShuffleIcon, TrashIcon } from 'lucide-react';
+import { ChevronRight, ClockIcon, CornerDownRightIcon, FileTextIcon, MoreVerticalIcon, PlayIcon, ShuffleIcon, TrashIcon } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react'
-import { WorkflowStatus } from 'types/workflow';
+import { WorkFlowExecutionStatus, WorkflowStatus } from 'types/workflow';
 import TooltipWrapper from '~/components/TooltipWrapper';
 import { Button, buttonVariants } from '~/components/ui/button';
 import { Card, CardContent } from '~/components/ui/card';
@@ -13,6 +13,8 @@ import { cn } from '~/lib/utils';
 import DeleteWorkflowDialogue from './DeleteWorkflowDialogue';
 import RunBtn from '~/app/workspace/_components/RunBtn';
 import SchedulerDialog from './SchedulerDialog';
+import ExecutionStatusIndicator from '~/app/workspace/runs/[workflowId]/ExecutionstatusIndicator';
+import { format, formatDistanceToNow } from 'date-fns';
 
 const statusColors = {
     [WorkflowStatus.DRAFT]: 'bg-yellow-300 text-yellow-600', 
@@ -67,6 +69,10 @@ function WorkFlowCard( {workflow}: {workflow: Workflow}) {
                 />
             </div>
         </CardContent>
+        {!isDraft && (
+            <LastRunDetails workflow={workflow}/>
+        )}
+        
     </Card>
   )
 }
@@ -114,6 +120,42 @@ function WorkFlowScheduler({isDraft, workflowId, cron}: {isDraft?: boolean, work
         <div className='flex items-center gap-2'>
             <CornerDownRightIcon  className='w-4 h-4 text-muted-foreground'/>
             <SchedulerDialog workflowId={workflowId} cron={cron} key={`${cron}-${workflowId}`}/>
+        </div>
+    )
+}
+
+function LastRunDetails({workflow}: {workflow: Workflow}) {
+    const {lastRunAt, lastRunStatus, lastRunId, nextRunAt} = workflow;
+    const formattedStartedAt = lastRunAt && formatDistanceToNow(lastRunAt, { addSuffix: true})
+
+    const nextSchedule = nextRunAt && format(nextRunAt, 'yyyy-MM-dd HH:mm:ss');
+
+    return (
+        <div className="bg-primary/8 px-4 py-4 flex justify-between items-center text-muted-foreground">
+            <div className='flex items-center text-sm gap-2'>
+                {lastRunAt && (
+                    <Link href={`/workspace/runs/${workflow.id}/${lastRunId}`} className='flex items-center gap-2 text-sm group font-medium'>
+                        <span>Last Run:</span>
+                        <ExecutionStatusIndicator
+                            status={lastRunStatus as WorkFlowExecutionStatus}
+                        />
+                        <span>{lastRunStatus}</span>
+                        <span>{formattedStartedAt}</span>
+                        <ChevronRight size={14} className='transform transition-all duration-300 translate-x-[2px] group-hover:translate-x-0 group-hover:rotate-90'/>
+                    </Link>
+                )}
+
+                {!lastRunAt && (
+                    <p className="text-sm font-medium">No runs yet</p>
+                )}
+            </div>
+            {nextRunAt && (
+                <div className='flex items-center gap-1 text-xs text-muted-foreground font-medium'>
+                    <ClockIcon size={14} className='text-muted-foreground inline-block mr-1' />
+                    <span className='text-sm'>Next Run:</span>
+                    <span className='text-sm'>{nextSchedule}</span>
+                </div>
+            )}
         </div>
     )
 }

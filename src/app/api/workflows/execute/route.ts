@@ -1,3 +1,4 @@
+import CronExpressionParser from "cron-parser";
 import { timingSafeEqual } from "crypto";
 import { id } from "date-fns/locale";
 import { ExecutionPhaseStatus, WorkFlowExecutionStatus, WorkFlowExecutionTrigger, type WorkFlowExecutionPlan } from "types/workflow";
@@ -54,34 +55,45 @@ export async function GET(request:Request) {
         return new Response("Workflow execution plan is empty", { status: 400 });
     }
 
-    const execution = await prisma.workflowExecution.create({
-        data: {
-            workflowId,
-            userId : workflow.userId,
-            definition: workflow.definition!,
-            status: WorkFlowExecutionStatus.PENDING,
-            startedAt: new Date(),
-            trigger: WorkFlowExecutionTrigger.SCHEDULED,
-            phases: {
-                create: executionPlan.flatMap((phase) => {
-                    return phase.nodes.flatMap((node) => {
-                        return {
-                            userId : workflow.userId,
-                            status: ExecutionPhaseStatus.CREATED,
-                            number: phase.phase,
-                            node: JSON.stringify(node),
-                            name: TaskRegistry[node.data.type].label,
+    let nextRun;
 
-                        }
+    try {
+        const cron = CronExpressionParser.parse(workflow.cron!, {tz: 'UTC'});
+        nextRun = cron.next().toDate();
+        const execution = await prisma.workflowExecution.create({
+            data: {
+                workflowId,
+                userId : workflow.userId,
+                definition: workflow.definition!,
+                status: WorkFlowExecutionStatus.PENDING,
+                startedAt: new Date(),
+                trigger: WorkFlowExecutionTrigger.SCHEDULED,
+                phases: {
+                    create: executionPlan.flatMap((phase) => {
+                        return phase.nodes.flatMap((node) => {
+                            return {
+                                userId : workflow.userId,
+                                status: ExecutionPhaseStatus.CREATED,
+                                number: phase.phase,
+                                node: JSON.stringify(node),
+                                name: TaskRegistry[node.data.type].label,
+
+                            }
+                        })
                     })
-                })
-            }
-            },
-    });
+                }
+                },
+        });
 
-    await ExecuteWorkflow(execution.id);
+        await ExecuteWorkflow(execution.id);
+        return new Response(null, { status: 200, statusText: "Workflow execution started" });
+    } catch (error) {
+        return Response.json({error: "Internal server error"}, {status: 500})
+    }
 
-    return new Response(null, { status: 200, statusText: "Workflow execution started" });
+    
+
+
 
 
 

@@ -15,7 +15,7 @@ import type { LogCollector } from "types/log";
 import { log } from "console";
 import { createLogCollector } from "../log";
 
-export async function ExecuteWorkflow( executionId: string) {
+export async function ExecuteWorkflow( executionId: string, nextRunAt? : Date) {
     const execution = await prisma.workflowExecution.findUnique({
         where: {
             id: executionId,
@@ -65,7 +65,7 @@ export async function ExecuteWorkflow( executionId: string) {
 
 
 }
-async function initializeWorkFlowExecution(executionId: string, workflowId: string) {
+async function initializeWorkFlowExecution(executionId: string, workflowId: string, nextRunAt? : Date) {
     await prisma.workflowExecution.update({
         where: {
             id: executionId,
@@ -84,6 +84,7 @@ async function initializeWorkFlowExecution(executionId: string, workflowId: stri
             lastRunAt: new Date(),
             lastRunId: executionId,
             lastRunStatus: WorkFlowExecutionStatus.RUNNING,
+            ...(nextRunAt && {nextRunAt}), // Update next run time if provided
         }
     })
 }
