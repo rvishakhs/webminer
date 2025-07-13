@@ -46,7 +46,7 @@ function WorkFlowCard( {workflow}: {workflow: Workflow}) {
                             </span>
                         )}
                     </h3>
-                    <WorkFlowScheduler isDraft={isDraft} />
+                    <WorkFlowScheduler isDraft={isDraft} workflowId={workflow.id} />
                 </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -108,14 +108,14 @@ function WorkFlowActions({workflowName, workflowId} : {workflowName: string, wor
     );
 }
 
-function WorkFlowScheduler({isDraft}: {isDraft?: boolean}) {
+function WorkFlowScheduler({isDraft, workflowId}: {isDraft?: boolean, workflowId: string}) {
 
     if (isDraft) return null;
 
     return (
         <div className='flex items-center gap-2'>
             <CornerDownRightIcon  className='w-4 h-4 text-muted-foreground'/>
-            <SchedulerDialog />
+            <SchedulerDialog WorkflowId={workflowId}/>
         </div>
     )
 }
