@@ -113,7 +113,7 @@ function WorkFlowScheduler({isDraft, workflowId, cron}: {isDraft?: boolean, work
     return (
         <div className='flex items-center gap-2'>
             <CornerDownRightIcon  className='w-4 h-4 text-muted-foreground'/>
-            <SchedulerDialog workflowId={workflowId} cron={cron}/>
+            <SchedulerDialog workflowId={workflowId} cron={cron} key={`${cron}-${workflowId}`}/>
         </div>
     )
 }

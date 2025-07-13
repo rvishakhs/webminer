@@ -16,6 +16,7 @@ import { set } from 'date-fns'
 import { Tooltip } from 'recharts'
 import TooltipWrapper from '~/components/TooltipWrapper'
 import CronExpressionParser from 'cron-parser'
+import { RemoveScheduler } from 'actions/workflows/removescheduler'
 
 function SchedulerDialog(props: {cron: string | null,  workflowId: string }) {
 
@@ -27,7 +28,18 @@ function SchedulerDialog(props: {cron: string | null,  workflowId: string }) {
         mutationFn: UpdateWorkflowCron,
         onSuccess: () => {
             toast.success("Workflow schedule updated successfully")
-            setCron("")
+            toast.dismiss("cron")
+        },
+        onError: () => {
+            toast.error("Failed to update workflow schedule. Please check the cron expression.")
+        },
+    })
+
+    const removecronmutation = useMutation({
+        mutationFn: RemoveScheduler,
+        onSuccess: () => {
+            toast.success("Workflow schedule removed successfully")
+            toast.dismiss("cron")
         },
         onError: () => {
             toast.error("Failed to update workflow schedule. Please check the cron expression.")
@@ -90,7 +102,7 @@ function SchedulerDialog(props: {cron: string | null,  workflowId: string }) {
                 </p>
                 <Input 
                     placeholder='E.g. * * * * * *'
-                    value={cron!}
+                    value={props.cron!}
                     onChange={(e) => setCron(e.target.value)}
                 />
 
@@ -100,6 +112,22 @@ function SchedulerDialog(props: {cron: string | null,  workflowId: string }) {
                         <HelpCircleIcon className='h-5 w-5 text-amber-300'/>
                     </TooltipWrapper>
                 </div>
+                {workflowHasValidCron && (
+                    <DialogClose asChild>
+                        <Button 
+                            variant={"outline"} 
+                            className='w-[150px] text-xs text-destructive cursor-pointer' 
+                            onClick={() => {
+                                toast.loading("Removing schedule..." , {id: "cron"})
+                                removecronmutation.mutate({
+                                    id: props.workflowId
+                                })
+                            }}
+                        >
+                            Remove Schedule
+                        </Button>
+                    </DialogClose>
+                ) }
             </div>
 
             <DialogFooter className='px-6 gap-2'>
