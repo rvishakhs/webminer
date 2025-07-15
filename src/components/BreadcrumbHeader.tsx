@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react'
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList} from './ui/breadcrumb'
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator} from './ui/breadcrumb'
 import { usePathname } from 'next/navigation'
 import { Mobilesidebar } from './Sidebar';
 
@@ -20,6 +20,9 @@ function BreadcrumbHeader() {
                             {path === "" ? "Home" : path}
                         </BreadcrumbLink>
                     </BreadcrumbItem>
+                    {index !== paths.length -1 && (
+                      <BreadcrumbSeparator className='text-muted-foreground'/>
+                    )}
                 </React.Fragment>
             ))}
         </BreadcrumbList>
