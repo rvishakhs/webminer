@@ -4,8 +4,9 @@ import type { LaunchBrowserTask } from '../task/LaunchBrowser';
 import type { PageToHtml } from '../task/PageToHTML';
 import type { FillInputTask } from '../task/FillInputTask';
 import { waitFor } from '~/lib/helper/waitFor';
+import type { ClickElementTask } from '../task/ClickElement';
 
-export async function FillInputExecutor(environment: ExecutionEnvironment<typeof FillInputTask>): Promise<boolean> {
+export async function ClickElementExecutor(environment: ExecutionEnvironment<typeof ClickElementTask>): Promise<boolean> {
     try {
         const selector = environment.getInput("Selector");
 
@@ -14,17 +15,11 @@ export async function FillInputExecutor(environment: ExecutionEnvironment<typeof
             return false;
         }
 
-        const value = environment.getInput("Value");
-        if(!value) {
-             environment.log.error("Value for thew selector is null or undefined.");
-            return false;
-        }
-
-        await environment.getPage()!.type(selector, value);
+        await environment.getPage()!.click(selector)
         await waitFor(3000)
         return true;
     } catch (error: any) {
-        environment.log.error(`Error in Fill input Executor: ${error.message}`);
+        environment.log.error(`Error in Click Element Executor: ${error.message}`);
         return false
     }
 }
