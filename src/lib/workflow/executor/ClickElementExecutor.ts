@@ -16,7 +16,6 @@ export async function ClickElementExecutor(environment: ExecutionEnvironment<typ
         }
 
         await environment.getPage()!.click(selector)
-        await waitFor(2000)
         return true;
     } catch (error: any) {
         environment.log.error(`Error in Click Element Executor: ${error.message}`);

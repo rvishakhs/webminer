@@ -21,7 +21,6 @@ export async function FillInputExecutor(environment: ExecutionEnvironment<typeof
         }
 
         await environment.getPage()!.type(selector, value);
-        await waitFor(2000)
         return true;
     } catch (error: any) {
         environment.log.error(`Error in Fill input Executor: ${error.message}`);

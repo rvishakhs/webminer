@@ -26,8 +26,6 @@ export async function WaitForElementExecutor(environment: ExecutionEnvironment<t
             visible: visibility === "visible",
             hidden: visibility === "hidden",
         });
-
-        waitFor(2000); // Wait for 2 seconds to ensure the element is ready
         environment.log.info(`Element with selector "${selector}" is now ${visibility}.`); // Log the visibility status
         return true;
     } catch (error: any) {
