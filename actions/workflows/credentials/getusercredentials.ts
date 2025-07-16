@@ -11,7 +11,7 @@ export async function GetCredentialsForUser() {
         throw new Error("User not authenticated");
     }
 
-    return await prisma.Credential.findMany({
+    return await prisma.credential.findMany({
         where: {
             userId,
         },
