@@ -30,8 +30,9 @@ function CreateCredentialDialogue({ triggerText }: { triggerText?: string }) {
 
   const { mutate, isPending } = useMutation({
     mutationFn: CreateCredential, 
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success("Credentials created successfully!", {id: 'create-credential-success'});
+      
     },
     onError: (error) => {
       toast.dismiss('create-credentials-loading'); // Dismiss the loading toast

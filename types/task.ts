@@ -6,12 +6,14 @@ export enum TaskType {
     CLICK_ELEMENT = "CLICK_ELEMENT",
     WAIT_FOR_ELEMENT = "WAIT_FOR_ELEMENT",
     DELIVER_VIA_WEBHOOK = "DELIVER_VIA_WEBHOOK",
+    EXTRACT_DATA_WITH_AI = "EXTRACT_DATA_WITH_AI",
 }
 
 export enum TaskParamType {
     STRING = "STRING",
     BROWSER_INSTANCE = "BROWSER_INSTANCE", 
     SELECT = "SELECT",
+    CREDENTIAL = "CREDENTIAL",
 }
 
 export interface TaskParam {
@@ -21,6 +23,7 @@ export interface TaskParam {
     required?: boolean;
     hideHandle?: boolean; // If true, the handle will not be displayed in the UI
     value?: string;
+    variant?: "textarea" | "default"; // If textarea, the input will be a textarea
     isEntryPoint?: boolean; // If true, this task can be an entry point in the workflow
     [key: string]: any; // Allow additional properties
 }
