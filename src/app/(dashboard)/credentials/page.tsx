@@ -29,6 +29,7 @@ function Credentialspage() {
               All information is encrypted and stored securely.
           </AlertDescription>
         </Alert>
+          <CreateCredentialDialogue />
 
         <Suspense fallback={
           <Skeleton className='h-[300px] w-full' />
