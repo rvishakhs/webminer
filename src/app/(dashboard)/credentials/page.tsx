@@ -73,8 +73,8 @@ async function UserCredentials() {
       {Credentials.map((credential) => {
         const createdAt = formatDistanceToNow(credential.createdAt, { addSuffix: true });
         return (
-          <Card key={credential.id} className='w-full p-4 flex justify-between'>
-            <div className='flex items-center gap-4'>
+          <Card key={credential.id} className='w-full p-4 flex flex-row justify-between '>
+            <div className='flex items-center gap-2'>
               <div className='rounded-full bg-primary/10 w-10 h-10 flex items-center justify-center'>
                 <LockKeyhole size={18} className='stroke-primary' />
               </div>
@@ -83,7 +83,9 @@ async function UserCredentials() {
                 <p className="text-xs text-muted-foreground">{createdAt}</p>
               </div>
             </div>
-            <DeleteCredentialswDialogue name={credential.name}/>
+            <div className="">
+              <DeleteCredentialswDialogue name={credential.name}/>
+            </div>
           </Card>
         )
       })}

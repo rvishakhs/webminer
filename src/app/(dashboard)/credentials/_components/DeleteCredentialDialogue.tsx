@@ -3,7 +3,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { deletecredentials } from 'actions/workflows/credentials/deletecredentials';
 import { deleteWorkFlows } from 'actions/workflows/deleteWorkFlows';
-import { XCircleIcon } from 'lucide-react';
+import { icons, XCircleIcon } from 'lucide-react';
 import React from 'react'
 import { toast } from 'sonner';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '~/components/ui/alert-dialog'
@@ -33,7 +33,10 @@ function DeleteCredentialswDialogue({name} : Props) {
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogTrigger asChild>
-            <Button variant={"destructive"}>
+            <Button 
+                variant={"destructive"} size={"icon"} 
+                className='hover:bg-red-500/60 cursor-pointer' 
+            >
                 <XCircleIcon className='h-4 w-4' />
             </Button>
         </AlertDialogTrigger>

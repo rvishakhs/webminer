@@ -13,11 +13,12 @@ export async function deletecredentials(name:string) {
         throw new Error("User not authenticated");
     }
 
-
     await prisma.credential.delete({
         where: {
-            name: name,
-            userId: userId,
+            userId_name: {
+                userId: userId,
+                name: name,
+            }
         },
 
     })
