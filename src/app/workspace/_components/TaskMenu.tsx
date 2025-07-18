@@ -10,7 +10,7 @@ import { TaskRegistry } from '~/lib/workflow/task/registry'
 function TaskMenu() {
   return (
     <aside className='w-[340px] min-w-[340px] max-w-[340px] border-r-2 border-separate h-full p-2 px-4 overflow-auto'>
-        <Accordion type='multiple' className='w-full ' defaultValue={['extraction', 'Interactions', 'timing', 'Results']}>
+        <Accordion type='multiple' className='w-full ' defaultValue={['extraction', 'Interactions', 'timing', 'Results', 'Data_Storage']}>
             <AccordionItem value="Interactions">
                 <AccordionTrigger className="font-bold">
                     User Interactions
@@ -36,6 +36,15 @@ function TaskMenu() {
                 </AccordionTrigger>
                 <AccordionContent className='flex flex-col gap-1'>
                     <TaskmenuBtn taskType={TaskType.WAIT_FOR_ELEMENT}/>
+                </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="Data_Storage">
+                <AccordionTrigger className="font-bold">
+                    Data Storage
+                </AccordionTrigger>
+                <AccordionContent className='flex flex-col gap-1'>
+                    <TaskmenuBtn taskType={TaskType.READ_PROPERTY_FROM_JSON}/>
+                    <TaskmenuBtn taskType={TaskType.ADD_PROPERTY_TO_JSON}/>
                 </AccordionContent>
             </AccordionItem>
             <AccordionItem value="Results">

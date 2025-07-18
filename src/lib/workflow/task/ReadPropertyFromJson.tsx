@@ -1,29 +1,28 @@
 import { is } from "date-fns/locale";
-import { CodeIcon, GlobeIcon, TextIcon, Variable, type LucideProps } from "lucide-react";
+import { Brain, BrainCircuit, CodeIcon, GlobeIcon, MousePointerClickIcon, TextIcon, Variable, type LucideProps } from "lucide-react";
 import { TaskParamType, TaskType } from "types/task";
 import type { WorkflowTask } from "types/workflow";
 
-export const ExtractTextFromElementTask = {
-    type: TaskType.EXTRACT_TEXT_FROM_ELEMENT,
-    label: "Extract Text From Element",
-    icon: (props: LucideProps) => <TextIcon className="stroke-rose-400" {...props} />,
+export const ReadPropertyFromJsonTask = {
+    type: TaskType.READ_PROPERTY_FROM_JSON,
+    label: "Read Properties From JSON",
+    icon: (props: LucideProps) => <BrainCircuit className="stroke-rose-400" {...props} />,
     isEntryPoint: false,
     inputs : [
         {
-            name: "Html",
+            name: "JSON",
             type: TaskParamType.STRING,
             required: true,
-            Variant : "textarea"
         }, 
         {
-            name: "Selector",
+            name: "Property Name",
             type: TaskParamType.STRING,
             required: true,
         }
     ] as const,
     outputs: [
         {
-            name: "Extracted Text",
+            name: "Property Value",
             type: TaskParamType.STRING,
         },
     ] as const,

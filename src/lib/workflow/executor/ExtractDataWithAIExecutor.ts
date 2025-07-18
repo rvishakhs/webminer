@@ -80,7 +80,9 @@ export async function ExtractDataWithAIExecutor(environment: ExecutionEnvironmen
             return false
         }
 
-         environment.setOutput("Extracted Data", JSON.stringify(result, null, 2));
+        console.log("AI Response:", result);
+
+         environment.setOutput("Extracted Data", JSON.stringify(result));
         return true;
     } catch (error: any) {
         environment.log.error(`Error in Click Element Executor: ${error.message}`);
