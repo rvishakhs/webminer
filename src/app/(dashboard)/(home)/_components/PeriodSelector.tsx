@@ -1,6 +1,7 @@
 "use client"
 
 import { SelectContent } from '@radix-ui/react-select'
+import { useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
 
 import type { Periods } from 'types/analythics'
@@ -13,11 +14,19 @@ const periodMonths = [
 
 
 function PeriodSelector({periods} : {periods : Periods[]}) {
-
-
+    // const searchParams = useSearchParams();
+    // const router = useRouter();
 
   return (
-    <Select>
+    <Select 
+        // onValueChange={(value) => {
+        // const [month, year] = value.split('-');
+        // const params = new URLSearchParams(searchParams)
+        // params.set('month', month!)
+        // params.set('year', year!)
+        // router.push(`?${params.toString()}`)
+        // }}
+    >
         <SelectTrigger className='w-[200px]'>
             <SelectValue />
         </SelectTrigger>

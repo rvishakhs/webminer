@@ -3,6 +3,7 @@
 
 generator client {
     provider = "prisma-client-js"
+    previewFeatures = ["accelerate"] // <- If present, Accelerate is enabled
 }
 
 datasource db {
