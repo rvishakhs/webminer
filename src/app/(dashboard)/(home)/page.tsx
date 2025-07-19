@@ -6,18 +6,21 @@ function HomePage() {
   return (
     <div>
       <Suspense>
-        <PeriodSelectorWrapper />
+        {/* <PeriodSelectorWrapper /> */}
+        <div>
+          hello world
+        </div>
       </Suspense>
     </div>
   )
 }
 
 async function PeriodSelectorWrapper(){
-  const periods = await GetPeriods();
+  // const periods = await GetPeriods();
 
-  return (
-    <PeriodSelector periods={periods} />
-  )
+  // return (
+  //   <PeriodSelector />
+  // )
 }
 
 export default HomePage
