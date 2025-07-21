@@ -7,6 +7,9 @@ import { Skeleton } from '~/components/ui/skeleton';
 import { GetStatusCardsValues } from 'actions/workflows/analytics/getstatusforperiod';
 import { CirclePlayIcon } from 'lucide-react';
 import StatusCard from './_components/StatusCard';
+import { waitFor } from '~/lib/helper/waitFor';
+import { GetWorkflowExecutionStatus } from 'actions/workflows/analytics/getworkflowexecutionstatus';
+import Executionchart from './_components/Executionchart';
 
 function HomePage({searchParams}: {searchParams : {month?: string; year?: string} }) {
 
@@ -29,7 +32,13 @@ function HomePage({searchParams}: {searchParams : {month?: string; year?: string
         </Suspense>
       </div>
       <div className="h-full py-6 flex flex-col gap-4">
-        <StatsCards selectedPeriod={periods}/>
+        <Suspense fallback={<Skeleton className='h-[120px]' />}>
+          <StatsCards selectedPeriod={periods} />
+        </Suspense>
+        <Suspense fallback={<Skeleton className='w-full h-[300px]' />}>
+          <StatusExecutionStatus selectedPeriod={periods} />
+        </Suspense>
+
       </div>
     </div>
   )
@@ -55,7 +64,6 @@ async function StatsCards({
 }){
 
   const data = await GetStatusCardsValues(selectedPeriod);
-
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 gap-4 lg:grid-cols-3 lg:gap-6 mt-4 min-h-[120px]'>
       <StatusCard title="Workflow Executions" value={data.workflowExecutions} icon="CirclePlayIcon"/>
@@ -64,6 +72,20 @@ async function StatsCards({
     </div>
 
   )
+}
+
+async function StatusExecutionStatus({
+  selectedPeriod
+}: {
+  selectedPeriod: Periods
+}) {
+
+  const data = await GetWorkflowExecutionStatus(selectedPeriod);
+
+  return (
+    <Executionchart data={data} />
+  )
+
 }
 
 
