@@ -1,7 +1,6 @@
 "use server"
 
 import { auth } from "@clerk/nextjs/server";
-import { stat } from "fs";
 import type { Periods } from "types/analythics";
 import { WorkFlowExecutionStatus } from "types/workflow";
 import { PeriodToDateRange } from "~/lib/helper/dates";
@@ -36,8 +35,6 @@ export async function GetStatusCardsValues(selectedPeriod: Periods) {
             }
         }
     })
-
-    console.log("Executions:", executions);
 
     const stats = {
         workflowExecutions : executions.length,
