@@ -18,27 +18,30 @@ function PeriodSelector({periods, selectedPeriod} : {periods : Periods[], select
     const router = useRouter();
 
   return (
-    <Select 
-        value={`${selectedPeriod.month}-${selectedPeriod.year}`}
-        onValueChange={(value) => {
-        const [month, year] = value.split('-');
-        const params = new URLSearchParams(searchParams)
-        params.set('month', month!)
-        params.set('year', year!)
-        router.push(`?${params.toString()}`)
-        }}
-    >
-        <SelectTrigger className='w-[200px]'>
-            <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-            {periods.map((period, index) => (
-                <SelectItem key={index} value={`${period.month}-${period.year}`}>
-                    {`${periodMonths[period.month - 1]} ${period.year}`}
-                </SelectItem>
-            ))}
-        </SelectContent>
-    </Select>
+    <div className='relative'>
+        <Select 
+            value={`${selectedPeriod.month}-${selectedPeriod.year}`}
+            onValueChange={(value) => {
+            const [month, year] = value.split('-');
+            const params = new URLSearchParams(searchParams)
+            params.set('month', month!)
+            params.set('year', year!)
+            router.push(`?${params.toString()}`)
+            }}
+            
+        >
+            <SelectTrigger className='w-[200px]'>
+                <SelectValue />
+            </SelectTrigger>
+            <SelectContent className='z-[100] w-[200px] bg-white shadow-lg border border-gray-300 rounded-md text-sm'>
+                {periods.map((period, index) => (
+                    <SelectItem className='' key={index} value={`${period.month}-${period.year}`}>
+                        {`${periodMonths[period.month - 1]} ${period.year}`}
+                    </SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
+    </div>
   )
 }
 
