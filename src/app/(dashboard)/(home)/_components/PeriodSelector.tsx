@@ -13,12 +13,13 @@ const periodMonths = [
 ]
 
 
-function PeriodSelector({periods} : {periods : Periods[]}) {
+function PeriodSelector({periods, selectedPeriod} : {periods : Periods[], selectedPeriod: Periods}) {
     const searchParams = useSearchParams();
     const router = useRouter();
 
   return (
     <Select 
+        value={`${selectedPeriod.month}-${selectedPeriod.year}`}
         onValueChange={(value) => {
         const [month, year] = value.split('-');
         const params = new URLSearchParams(searchParams)

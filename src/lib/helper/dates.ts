@@ -1,4 +1,5 @@
-import { intervalToDuration } from "date-fns";
+import { endOfMonth, intervalToDuration, startOfMonth } from "date-fns";
+import type { Periods } from "types/analythics";
 
 export function DatesToDurationString(
     end: Date | null | undefined,
@@ -16,6 +17,10 @@ export function DatesToDurationString(
     })
 
     return `${duration.minutes || 0}m ${duration.seconds || 0}s`;
+}
 
-    
+export function PeriodToDateRange(period: Periods){
+    const startDate = startOfMonth(new Date(period.year, period.month - 1));
+    const endDate = endOfMonth(new Date(period.year, period.month - 1));
+    return { startDate, endDate };
 }
