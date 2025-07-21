@@ -14,18 +14,18 @@ const periodMonths = [
 
 
 function PeriodSelector({periods} : {periods : Periods[]}) {
-    // const searchParams = useSearchParams();
-    // const router = useRouter();
+    const searchParams = useSearchParams();
+    const router = useRouter();
 
   return (
     <Select 
-        // onValueChange={(value) => {
-        // const [month, year] = value.split('-');
-        // const params = new URLSearchParams(searchParams)
-        // params.set('month', month!)
-        // params.set('year', year!)
-        // router.push(`?${params.toString()}`)
-        // }}
+        onValueChange={(value) => {
+        const [month, year] = value.split('-');
+        const params = new URLSearchParams(searchParams)
+        params.set('month', month!)
+        params.set('year', year!)
+        router.push(`?${params.toString()}`)
+        }}
     >
         <SelectTrigger className='w-[200px]'>
             <SelectValue />
