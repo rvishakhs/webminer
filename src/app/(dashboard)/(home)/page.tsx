@@ -10,6 +10,8 @@ import StatusCard from './_components/StatusCard';
 import { waitFor } from '~/lib/helper/waitFor';
 import { GetWorkflowExecutionStatus } from 'actions/workflows/analytics/getworkflowexecutionstatus';
 import Executionchart from './_components/Executionchart';
+import HomeBanner from './_components/HomeBanner';
+import { getLastTwoWorkflows } from 'actions/workflows/analytics/getlasttwoworkflows';
 
 function HomePage({searchParams}: {searchParams : {month?: string; year?: string} }) {
 
@@ -37,6 +39,9 @@ function HomePage({searchParams}: {searchParams : {month?: string; year?: string
         </Suspense>
         <Suspense fallback={<Skeleton className='w-full h-[300px]' />}>
           <StatusExecutionStatus selectedPeriod={periods} />
+        </Suspense>
+        <Suspense fallback={<Skeleton className='w-full h-[300px]' />}>
+          <RecentWorkflowExecutions   />
         </Suspense>
 
       </div>
@@ -84,6 +89,17 @@ async function StatusExecutionStatus({
 
   return (
     <Executionchart data={data} />
+  )
+
+}
+
+
+async function RecentWorkflowExecutions() {
+
+  const lastworkflows = await getLastTwoWorkflows();
+
+  return (
+    <HomeBanner workflows={lastworkflows} />
   )
 
 }
